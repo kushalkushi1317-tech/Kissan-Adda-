@@ -1,0 +1,6 @@
+{
+  "name": "Kissan Adda",
+  "description": "Know Today's Price. Sell at the Right Price. Agricultural market price discovery, APMC mandi comparisons, and historical trends for smart farming.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

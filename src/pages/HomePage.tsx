@@ -22,7 +22,8 @@ import { useRouter } from '../context/RouterContext';
 import { useLanguage } from '../context/LanguageContext';
 import { usePriceData } from '../context/PriceDataContext';
 import { useTheme } from '../context/ThemeContext';
-import { AnimatedCropBackground } from '../components/AnimatedCropBackground';
+import { PhotographicParallaxBackground } from '../components/PhotographicParallaxBackground';
+import { DavanagereMarketsSection } from '../components/DavanagereMarketsSection';
 import { VoiceSearchButton } from '../components/VoiceSearchButton';
 import { CROP_CATEGORIES } from '../data/mockData';
 
@@ -38,6 +39,7 @@ export const HomePage: React.FC = () => {
     unit, 
     statesList, 
     getDistricts, 
+    getCities,
     getMandis,
     globalSearch,
     setGlobalSearch,
@@ -45,8 +47,11 @@ export const HomePage: React.FC = () => {
     setSelectedStateFilter,
     selectedDistrictFilter,
     setSelectedDistrictFilter,
+    selectedCityFilter,
+    setSelectedCityFilter,
     selectedMandiFilter,
     setSelectedMandiFilter,
+    selectedCategoryFilter,
     setSelectedCategoryFilter,
     watchlist,
     toggleCropWatchlist,
@@ -55,16 +60,18 @@ export const HomePage: React.FC = () => {
     recordCropView,
   } = usePriceData();
 
-  // Local state for hero cascading selects
+  // Local state for hero cascading selects (State -> District -> City/Town -> Mandi)
   const [heroSearch, setHeroSearch] = useState('');
   const [heroState, setHeroState] = useState('');
   const [heroDistrict, setHeroDistrict] = useState('');
+  const [heroCity, setHeroCity] = useState('');
   const [heroMandi, setHeroMandi] = useState('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
 
   const availableDistricts = heroState ? getDistricts(heroState) : [];
-  const availableMandis = heroDistrict ? getMandis(heroDistrict) : [];
+  const availableCities = (heroState && heroDistrict) ? getCities(heroState, heroDistrict) : [];
+  const availableMandis = heroDistrict ? getMandis(heroDistrict, heroCity) : [];
 
   const handleSearchChange = (val: string) => {
     setHeroSearch(val);
@@ -94,8 +101,20 @@ export const HomePage: React.FC = () => {
     if (heroSearch) setGlobalSearch(heroSearch);
     if (heroState) setSelectedStateFilter(heroState);
     if (heroDistrict) setSelectedDistrictFilter(heroDistrict);
+    if (heroCity) setSelectedCityFilter(heroCity);
     if (heroMandi) setSelectedMandiFilter(heroMandi);
     navigate('/prices');
+  };
+
+  const handleSelectDavanagereShortcut = () => {
+    setHeroState('Karnataka');
+    setHeroDistrict('Davanagere');
+    setHeroCity('');
+    setHeroMandi('');
+    const el = document.getElementById('davanagere-markets');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   const handleCropClick = (cropId: string) => {
@@ -103,28 +122,23 @@ export const HomePage: React.FC = () => {
     navigate(`/crops/${cropId}`);
   };
 
-  const topPrices = [...records].sort((a, b) => b.modalPrice - a.modalPrice).slice(0, 6);
   const featuredRecords = records.slice(0, 8);
-
   const recentlyViewedCrops = crops.filter(c => recentlyViewedIds.includes(c.id)).slice(0, 6);
 
   return (
     <div className="space-y-16 pb-20">
-      {/* Hero Section with Animated Agricultural Background */}
+      {/* Hero Section with Photographic Parallax Produce Background */}
       <section 
         className="relative overflow-hidden text-white pt-16 pb-24 px-4 sm:px-6 transition-all duration-500"
         style={{ background: 'linear-gradient(180deg, var(--theme-hero-from, #14532D) 0%, var(--theme-hero-via, #166534) 50%, var(--theme-hero-to, #14532D) 100%)' }}
       >
-        {/* Animated Floating Crop Illustrations along the perimeter */}
-        <AnimatedCropBackground />
-
-        {/* Subtle patterned mesh */}
-        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none" />
+        {/* Real Produce Photographic Parallax Tiles (Pointer Responsive) */}
+        <PhotographicParallaxBackground />
 
         <div className="relative max-w-7xl mx-auto z-10">
-          <div className="max-w-3xl mx-auto text-center space-y-4 mb-10">
+          <div className="max-w-3xl mx-auto text-center space-y-4 mb-8">
             {/* Tagline Pill */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 dark:bg-black/30 backdrop-blur-md text-emerald-200 text-xs font-semibold border border-white/15 shadow-sm">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 dark:bg-black/40 backdrop-blur-md text-emerald-200 text-xs font-semibold border border-white/15 shadow-sm">
               <Sparkles className="w-3.5 h-3.5 text-yellow-300 animate-pulse" />
               <span>{t('mainTagline', "Know Today's Price. Sell at the Right Price.")}</span>
             </div>
@@ -143,9 +157,28 @@ export const HomePage: React.FC = () => {
             <p className="text-xs sm:text-base text-emerald-100/90 max-w-2xl mx-auto font-normal leading-relaxed">
               {t('heroDescription', "Discover today's agricultural market prices, compare mandis, track crop trends, and make informed selling decisions.")}
             </p>
+
+            {/* Quick Davanagere & Karnataka Hub Shortcut */}
+            <div className="pt-1 flex flex-wrap justify-center gap-2">
+              <button
+                type="button"
+                onClick={handleSelectDavanagereShortcut}
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-400/20 hover:bg-amber-400/30 text-amber-200 border border-amber-300/30 backdrop-blur-md transition-all cursor-pointer"
+              >
+                <span>🌾 Explore Davanagere Markets (ದಾವಣಗೆರೆ)</span>
+                <ArrowRight className="w-3 h-3" />
+              </button>
+              <button
+                type="button"
+                onClick={() => { setHeroState('Karnataka'); setHeroDistrict(''); setHeroCity(''); }}
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-white/10 hover:bg-white/20 text-emerald-100 border border-white/15 backdrop-blur-md transition-all cursor-pointer"
+              >
+                <span>Karnataka 31 Districts Hub</span>
+              </button>
+            </div>
           </div>
 
-          {/* Hero Interactive Search & Cascading Filter Box */}
+          {/* Hero Interactive Search & 4-Tier Cascading Filter Box */}
           <div className="max-w-4xl mx-auto bg-white dark:bg-stone-900 rounded-2xl shadow-2xl p-4 sm:p-7 text-stone-900 dark:text-white border border-stone-200/80 dark:border-stone-800">
             <form onSubmit={handleHeroSubmit} className="space-y-4">
               {/* Primary Search Bar with Voice Search */}
@@ -157,7 +190,7 @@ export const HomePage: React.FC = () => {
                     value={heroSearch}
                     onChange={(e) => handleSearchChange(e.target.value)}
                     onFocus={() => heroSearch.trim() && setShowSuggestions(true)}
-                    placeholder={t('searchCropPlaceholder', 'Search crops e.g. Tomato, Onion, Wheat, Rice...')}
+                    placeholder={t('searchCropPlaceholder', 'Search crops e.g. Tomato, Onion, Wheat, Rice, Arecanut, Maize...')}
                     className="w-full pl-12 pr-20 py-3.5 text-sm sm:text-base bg-stone-50 dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-xl focus:bg-white dark:focus:bg-stone-900 focus:ring-2 focus:ring-emerald-500/30 focus:border-[#22A447] focus:outline-hidden transition-all text-stone-900 dark:text-white placeholder:text-stone-400 font-medium"
                   />
                   
@@ -167,7 +200,7 @@ export const HomePage: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => { setHeroSearch(''); setSuggestions([]); setShowSuggestions(false); }}
-                        className="text-xs text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 font-medium px-1.5 py-1"
+                        className="text-xs text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 font-medium px-1.5 py-1 cursor-pointer"
                       >
                         Clear
                       </button>
@@ -187,7 +220,7 @@ export const HomePage: React.FC = () => {
                           setHeroSearch(sug);
                           setShowSuggestions(false);
                         }}
-                        className="w-full text-left px-4 py-2 text-sm text-stone-800 dark:text-stone-200 hover:bg-emerald-50 dark:hover:bg-emerald-950/60 hover:text-[#14532D] font-medium flex items-center justify-between"
+                        className="w-full text-left px-4 py-2 text-sm text-stone-800 dark:text-stone-200 hover:bg-emerald-50 dark:hover:bg-emerald-950/60 hover:text-emerald-700 font-medium flex items-center justify-between cursor-pointer"
                       >
                         <span>{sug}</span>
                         <ArrowRight className="w-3.5 h-3.5 text-stone-400" />
@@ -197,9 +230,9 @@ export const HomePage: React.FC = () => {
                 )}
               </div>
 
-              {/* Cascading Selectors: State -> District -> Mandi */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                {/* State */}
+              {/* 4-Tier Cascading Selectors: State -> District -> City/Town -> Market/APMC */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                {/* 1. State */}
                 <div>
                   <label className="block text-[11px] font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400 mb-1">
                     {t('thState', 'State')}
@@ -209,9 +242,10 @@ export const HomePage: React.FC = () => {
                     onChange={(e) => {
                       setHeroState(e.target.value);
                       setHeroDistrict('');
+                      setHeroCity('');
                       setHeroMandi('');
                     }}
-                    className="w-full px-3 py-2.5 text-xs sm:text-sm bg-stone-50 dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg focus:ring-2 focus:ring-emerald-500/20 focus:border-[#22A447] focus:outline-hidden text-stone-800 dark:text-stone-200 font-medium"
+                    className="w-full px-3 py-2 text-xs sm:text-sm bg-stone-50 dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg focus:ring-2 focus:ring-emerald-500/20 focus:border-[#22A447] focus:outline-hidden text-stone-800 dark:text-stone-200 font-medium"
                   >
                     <option value="">{t('selectState', 'All States')}</option>
                     {statesList.map(st => (
@@ -220,7 +254,7 @@ export const HomePage: React.FC = () => {
                   </select>
                 </div>
 
-                {/* District */}
+                {/* 2. District */}
                 <div>
                   <label className="block text-[11px] font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400 mb-1">
                     {t('thDistrict', 'District')}
@@ -230,9 +264,10 @@ export const HomePage: React.FC = () => {
                     disabled={!heroState && availableDistricts.length === 0}
                     onChange={(e) => {
                       setHeroDistrict(e.target.value);
+                      setHeroCity('');
                       setHeroMandi('');
                     }}
-                    className="w-full px-3 py-2.5 text-xs sm:text-sm bg-stone-50 dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg focus:ring-2 focus:ring-emerald-500/20 focus:border-[#22A447] focus:outline-hidden text-stone-800 dark:text-stone-200 font-medium disabled:opacity-50"
+                    className="w-full px-3 py-2 text-xs sm:text-sm bg-stone-50 dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg focus:ring-2 focus:ring-emerald-500/20 focus:border-[#22A447] focus:outline-hidden text-stone-800 dark:text-stone-200 font-medium disabled:opacity-50"
                   >
                     <option value="">{t('selectDistrict', 'All Districts')}</option>
                     {availableDistricts.map(dt => (
@@ -241,18 +276,39 @@ export const HomePage: React.FC = () => {
                   </select>
                 </div>
 
-                {/* Mandi */}
+                {/* 3. City / Town */}
                 <div>
                   <label className="block text-[11px] font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400 mb-1">
-                    {t('thMandiName', 'Mandi')}
+                    City / Town
+                  </label>
+                  <select
+                    value={heroCity}
+                    disabled={!heroDistrict || availableCities.length === 0}
+                    onChange={(e) => {
+                      setHeroCity(e.target.value);
+                      setHeroMandi('');
+                    }}
+                    className="w-full px-3 py-2 text-xs sm:text-sm bg-stone-50 dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg focus:ring-2 focus:ring-emerald-500/20 focus:border-[#22A447] focus:outline-hidden text-stone-800 dark:text-stone-200 font-medium disabled:opacity-50"
+                  >
+                    <option value="">All Towns</option>
+                    {availableCities.map(ct => (
+                      <option key={ct} value={ct}>{ct}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* 4. Mandi / Market */}
+                <div>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400 mb-1">
+                    {t('thMandiName', 'Market / APMC')}
                   </label>
                   <select
                     value={heroMandi}
                     disabled={!heroDistrict && availableMandis.length === 0}
                     onChange={(e) => setHeroMandi(e.target.value)}
-                    className="w-full px-3 py-2.5 text-xs sm:text-sm bg-stone-50 dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg focus:ring-2 focus:ring-emerald-500/20 focus:border-[#22A447] focus:outline-hidden text-stone-800 dark:text-stone-200 font-medium disabled:opacity-50"
+                    className="w-full px-3 py-2 text-xs sm:text-sm bg-stone-50 dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg focus:ring-2 focus:ring-emerald-500/20 focus:border-[#22A447] focus:outline-hidden text-stone-800 dark:text-stone-200 font-medium disabled:opacity-50"
                   >
-                    <option value="">{t('selectMandi', 'All Mandis')}</option>
+                    <option value="">{t('selectMandi', 'All Markets')}</option>
                     {availableMandis.map(md => (
                       <option key={md} value={md}>{md}</option>
                     ))}
@@ -264,7 +320,7 @@ export const HomePage: React.FC = () => {
               <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
                 <div className="text-xs text-stone-500 dark:text-stone-400 flex items-center gap-1.5 self-start sm:self-center">
                   <MapPin className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                  <span>Verified APMC yards across 28 States & UTs</span>
+                  <span>Verified APMC yards across Karnataka & India</span>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
@@ -272,7 +328,7 @@ export const HomePage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => navigate('/directory')}
-                    className="flex-1 sm:flex-initial px-3.5 py-2.5 bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 text-xs sm:text-sm font-semibold rounded-xl transition-colors flex items-center justify-center gap-1.5 border border-stone-200 dark:border-stone-700"
+                    className="flex-1 sm:flex-initial px-3.5 py-2.5 bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 text-xs sm:text-sm font-semibold rounded-xl transition-colors flex items-center justify-center gap-1.5 border border-stone-200 dark:border-stone-700 cursor-pointer"
                   >
                     <BookOpen className="w-4 h-4 text-emerald-600" />
                     <span>{t('browseCropsBtn', 'Browse Crops')}</span>
@@ -282,7 +338,7 @@ export const HomePage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => navigate('/compare')}
-                    className="flex-1 sm:flex-initial px-3.5 py-2.5 bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 text-xs sm:text-sm font-semibold rounded-xl transition-colors flex items-center justify-center gap-1.5 border border-stone-200 dark:border-stone-700"
+                    className="flex-1 sm:flex-initial px-3.5 py-2.5 bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 text-xs sm:text-sm font-semibold rounded-xl transition-colors flex items-center justify-center gap-1.5 border border-stone-200 dark:border-stone-700 cursor-pointer"
                   >
                     <Scale className="w-4 h-4 text-emerald-600" />
                     <span>{t('compareMarketsBtn', 'Compare Markets')}</span>
@@ -313,7 +369,7 @@ export const HomePage: React.FC = () => {
                 <button
                   key={rec.id}
                   onClick={() => handleCropClick(rec.cropId)}
-                  className="bg-white/10 dark:bg-black/30 hover:bg-white/15 px-3 py-1 rounded-lg text-xs backdrop-blur-md flex items-center gap-2 transition-colors border border-white/10 text-left"
+                  className="bg-white/10 dark:bg-black/30 hover:bg-white/15 px-3 py-1 rounded-lg text-xs backdrop-blur-md flex items-center gap-2 transition-colors border border-white/10 text-left cursor-pointer"
                 >
                   <span className="font-semibold text-white">
                     {rec.cropName}
@@ -333,6 +389,8 @@ export const HomePage: React.FC = () => {
 
       {/* Main Content Area */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-16">
+        {/* Dedicated Davanagere Local Markets Section */}
+        <DavanagereMarketsSection />
         {/* Recently Viewed Crops (If user viewed any) */}
         {recentlyViewedCrops.length > 0 && (
           <section className="bg-emerald-50/60 dark:bg-stone-900/60 p-4 sm:p-5 rounded-2xl border border-emerald-100 dark:border-stone-800 space-y-3">

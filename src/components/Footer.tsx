@@ -8,14 +8,27 @@ export const Footer: React.FC = () => {
   const { t } = useLanguage();
 
   return (
-    <footer className="bg-stone-900 text-stone-300 pt-14 pb-8 border-t border-stone-800">
+    <footer 
+      className="pt-14 pb-8 border-t transition-colors duration-300"
+      style={{ 
+        backgroundColor: 'var(--theme-footer-bg)', 
+        borderColor: 'var(--theme-border)', 
+        color: 'var(--theme-text-muted)' 
+      }}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-stone-800">
+        <div 
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b"
+          style={{ borderColor: 'var(--theme-border)' }}
+        >
           {/* Brand info */}
           <div className="lg:col-span-2 space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#176B35] to-[#2E8B45] text-white flex items-center justify-center shadow-md">
-                <svg className="w-6 h-6 fill-current text-emerald-100" viewBox="0 0 24 24">
+              <div 
+                className="w-10 h-10 rounded-xl text-white flex items-center justify-center shadow-md"
+                style={{ background: 'linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-secondary) 100%)' }}
+              >
+                <svg className="w-6 h-6 fill-current text-white" viewBox="0 0 24 24">
                   <path d="M12 2C6.5 2 2 6.5 2 12c0 3.58 1.9 6.72 4.74 8.46L12 12V2zm0 10l5.26 8.46C20.1 18.72 22 15.58 22 12c0-5.5-4.5-10-10-10v10z" />
                 </svg>
               </div>

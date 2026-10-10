@@ -13,10 +13,12 @@ export type Language =
   | 'as'; // Assamese
 
 export type ColorTheme = 
-  | 'nature-green' 
-  | 'fresh-lime' 
-  | 'harvest-gold' 
-  | 'earth-brown' 
+  | 'bright-white'
+  | 'classic-green'
+  | 'fresh-lime'
+  | 'harvest-gold'
+  | 'earth-brown'
+  | 'pure-black'
   | 'forest-dark';
 
 export type TextSize = 'normal' | 'large';
@@ -66,11 +68,18 @@ export interface Mandi {
   name: string;
   state: string;
   district: string;
-  marketType: 'Principal Market Yard' | 'Sub Market Yard' | 'Private Market';
+  city?: string;
+  town?: string;
+  marketType: 'Principal Market Yard' | 'Sub Market Yard' | 'Private Market' | 'Special Commodity Yard';
   address: string;
   phone: string;
   dailyArrivalTons: number;
   featuredCrops: string[];
+  isVerified?: boolean;
+  verificationStatus?: 'Verified Official APMC' | 'Verified Special Sub-Yard' | 'Flagged for Review';
+  officialSource?: string;
+  sourceUrl?: string;
+  isDavanagereRegion?: boolean;
 }
 
 export interface MarketPriceRecord {
@@ -82,6 +91,7 @@ export interface MarketPriceRecord {
   category: CropCategory;
   state: string;
   district: string;
+  city?: string;
   mandiName: string;
   mandiId: string;
   variety: string;
@@ -94,6 +104,8 @@ export interface MarketPriceRecord {
   lastUpdated: string; // e.g. "Today, 11:30 AM"
   arrivalsTons: number;
   dataSource: string;  // e.g. "Agmarknet APMC Daily Bulletin"
+  isLiveVerified?: boolean;
+  statusNote?: string;
 }
 
 export interface HistoricalPricePoint {
@@ -110,6 +122,7 @@ export interface CSVImportRecord {
   category: string;
   state: string;
   district: string;
+  city?: string;
   mandiName: string;
   variety?: string;
   qualityGrade?: string;

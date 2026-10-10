@@ -59,7 +59,10 @@ const AppContent: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FFFDF2] dark:bg-[#071C11] text-stone-900 dark:text-stone-100 font-sans selection:bg-emerald-500/20 selection:text-emerald-900 transition-colors">
+    <div 
+      className="min-h-screen flex flex-col font-sans selection:bg-emerald-500/20 selection:text-emerald-900 transition-colors duration-300"
+      style={{ backgroundColor: 'var(--theme-bg)', color: 'var(--theme-text-main)' }}
+    >
       <Header />
       <DataDisclaimerBanner />
       <main className="flex-1">

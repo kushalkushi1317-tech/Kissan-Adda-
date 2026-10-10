@@ -14,13 +14,21 @@ import {
   INITIAL_PRICE_RECORDS, 
   getUniqueStates, 
   getDistrictsForState, 
-  getMandisForDistrict 
+  getMandisForDistrict,
+  DAVANAGERE_MARKETS
 } from '../data/mockData';
+import { 
+  getAllStates, 
+  getDistrictsByState, 
+  getCitiesByDistrict, 
+  getMarketsByLocation 
+} from '../data/locationData';
 
 interface PriceDataContextType {
   records: MarketPriceRecord[];
   crops: Crop[];
   mandis: Mandi[];
+  davanagereMarkets: Mandi[];
   unit: PriceUnit;
   setUnit: (unit: PriceUnit) => void;
   formatPrice: (pricePerQuintal: number | undefined | null, overrideUnit?: PriceUnit) => string;
@@ -34,7 +42,8 @@ interface PriceDataContextType {
   resetToDefaultData: () => void;
   statesList: string[];
   getDistricts: (state: string) => string[];
-  getMandis: (district: string) => string[];
+  getCities: (state: string, district: string) => string[];
+  getMandis: (district: string, city?: string) => string[];
   // Quick search filter state to persist between header and prices page
   globalSearch: string;
   setGlobalSearch: (q: string) => void;
@@ -42,6 +51,8 @@ interface PriceDataContextType {
   setSelectedStateFilter: (s: string) => void;
   selectedDistrictFilter: string;
   setSelectedDistrictFilter: (d: string) => void;
+  selectedCityFilter: string;
+  setSelectedCityFilter: (c: string) => void;
   selectedMandiFilter: string;
   setSelectedMandiFilter: (m: string) => void;
   selectedCategoryFilter: string;
@@ -138,6 +149,7 @@ export const PriceDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [globalSearch, setGlobalSearch] = useState('');
   const [selectedStateFilter, setSelectedStateFilter] = useState('');
   const [selectedDistrictFilter, setSelectedDistrictFilter] = useState('');
+  const [selectedCityFilter, setSelectedCityFilter] = useState('');
   const [selectedMandiFilter, setSelectedMandiFilter] = useState('');
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState('All');
 
@@ -145,6 +157,7 @@ export const PriceDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     setGlobalSearch('');
     setSelectedStateFilter('');
     setSelectedDistrictFilter('');
+    setSelectedCityFilter('');
     setSelectedMandiFilter('');
     setSelectedCategoryFilter('All');
   };
@@ -358,9 +371,30 @@ export const PriceDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }
   };
 
-  const statesList = getUniqueStates(records);
-  const getDistricts = (state: string) => getDistrictsForState(records, state);
-  const getMandis = (district: string) => getMandisForDistrict(records, district);
+  const statesList = Array.from(new Set([...getAllStates(), ...getUniqueStates(records)])).sort();
+
+  const getDistricts = (state: string) => {
+    if (!state) return [];
+    const fromHierarchy = getDistrictsByState(state);
+    const fromRecords = getDistrictsForState(records, state);
+    return Array.from(new Set([...fromHierarchy, ...fromRecords])).sort();
+  };
+
+  const getCities = (state: string, district: string) => {
+    if (!state || !district) return [];
+    return getCitiesByDistrict(state, district);
+  };
+
+  const getMandis = (district: string, city?: string) => {
+    if (!district) return [];
+    const fromRecords = records
+      .filter(r => r.district.toLowerCase() === district.toLowerCase() && (!city || (r.city && r.city.toLowerCase() === city.toLowerCase())))
+      .map(r => r.mandiName);
+    const fromMandis = mandis
+      .filter(m => m.district.toLowerCase() === district.toLowerCase() && (!city || (m.city && m.city.toLowerCase() === city.toLowerCase())))
+      .map(m => m.name);
+    return Array.from(new Set([...fromRecords, ...fromMandis])).sort();
+  };
 
   return (
     <PriceDataContext.Provider
@@ -368,6 +402,7 @@ export const PriceDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         records,
         crops,
         mandis,
+        davanagereMarkets: DAVANAGERE_MARKETS,
         unit,
         setUnit,
         formatPrice,
@@ -381,6 +416,7 @@ export const PriceDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         resetToDefaultData,
         statesList,
         getDistricts,
+        getCities,
         getMandis,
         globalSearch,
         setGlobalSearch,
@@ -388,6 +424,8 @@ export const PriceDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         setSelectedStateFilter,
         selectedDistrictFilter,
         setSelectedDistrictFilter,
+        selectedCityFilter,
+        setSelectedCityFilter,
         selectedMandiFilter,
         setSelectedMandiFilter,
         selectedCategoryFilter,

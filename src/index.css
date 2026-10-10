@@ -2,113 +2,247 @@
 
 @layer base {
   :root {
-    /* Nature-Inspired Base Theme Palette */
-    --color-brand-forest: #14532D;
-    --color-brand-leaf: #22A447;
-    --color-brand-lime: #A3E635;
-    --color-brand-cream: #FFFDF2;
-    --color-brand-earth: #8B5E3C;
-    --color-brand-harvest: #FACC15;
-
-    /* Dynamic Theme Mapping (Default: Nature Green) */
-    --theme-primary: #14532D;
-    --theme-primary-hover: #0E3E21;
-    --theme-secondary: #22A447;
-    --theme-accent: #A3E635;
-    --theme-accent-gold: #FACC15;
-    --theme-bg: #FFFDF2;
+    /* Default Base Tokens (Classic Green) */
+    --theme-bg: #F5F8F3;
     --theme-surface: #FFFFFF;
-    --theme-surface-subtle: #F5F8F3;
+    --theme-surface-subtle: #ECF5EB;
+    --theme-border: #D5E4D3;
+    --theme-text-main: #192A1D;
+    --theme-text-muted: #56715B;
+    --theme-primary: #176B35;
+    --theme-primary-hover: #12562A;
+    --theme-primary-text: #FFFFFF;
+    --theme-secondary: #2E8B45;
+    --theme-accent: #A3E635;
+    --theme-hero-from: #14532D;
+    --theme-hero-via: #166534;
+    --theme-hero-to: #14532D;
+    --theme-hero-text: #FFFFFF;
+    --theme-card-bg: #FFFFFF;
+    --theme-card-border: #D5E4D3;
+    --theme-header-bg: #FFFFFF;
+    --theme-footer-bg: #111C13;
+    --theme-input-bg: #FFFFFF;
+    --theme-badge-bg: #DCFCE7;
+    --theme-badge-text: #15803D;
+  }
+
+  /* -------------------------------------------------------------
+     1. BRIGHT WHITE THEME
+     Pure white backgrounds, dark text, subtle grey borders, green accents
+     ------------------------------------------------------------- */
+  :root.theme-bright-white,
+  [data-theme="bright-white"] {
+    --theme-bg: #FFFFFF;
+    --theme-surface: #FFFFFF;
+    --theme-surface-subtle: #F8FAFC;
     --theme-border: #E2E8F0;
-    --theme-text-main: #1C1917;
+    --theme-text-main: #0F172A;
     --theme-text-muted: #64748B;
-    --theme-hero-from: #14532D;
-    --theme-hero-via: #166534;
-    --theme-hero-to: #14532D;
-  }
-
-  /* 1. Nature Green Theme */
-  :root.theme-nature-green {
-    --theme-primary: #14532D;
-    --theme-primary-hover: #0E3E21;
-    --theme-secondary: #22A447;
-    --theme-accent: #A3E635;
-    --theme-bg: #FFFDF2;
-    --theme-surface: #FFFFFF;
-    --theme-surface-subtle: #F3F8F2;
-    --theme-border: #E3EDE2;
-    --theme-hero-from: #14532D;
-    --theme-hero-via: #166534;
-    --theme-hero-to: #14532D;
-  }
-
-  /* 2. Fresh Lime Theme */
-  :root.theme-fresh-lime {
     --theme-primary: #15803D;
     --theme-primary-hover: #166534;
-    --theme-secondary: #22A447;
-    --theme-accent: #84CC16;
+    --theme-primary-text: #FFFFFF;
+    --theme-secondary: #16A34A;
+    --theme-accent: #22C55E;
+    --theme-hero-from: #F8FAFC;
+    --theme-hero-via: #F1F5F9;
+    --theme-hero-to: #FFFFFF;
+    --theme-hero-text: #0F172A;
+    --theme-card-bg: #FFFFFF;
+    --theme-card-border: #E2E8F0;
+    --theme-header-bg: #FFFFFF;
+    --theme-footer-bg: #0F172A;
+    --theme-input-bg: #FFFFFF;
+    --theme-badge-bg: #F0FDF4;
+    --theme-badge-text: #166534;
+  }
+
+  /* -------------------------------------------------------------
+     2. CLASSIC GREEN THEME
+     Clean light backgrounds with natural green highlights
+     ------------------------------------------------------------- */
+  :root.theme-classic-green,
+  :root.theme-nature-green,
+  [data-theme="classic-green"],
+  [data-theme="nature-green"] {
+    --theme-bg: #F5F8F3;
+    --theme-surface: #FFFFFF;
+    --theme-surface-subtle: #ECF5EB;
+    --theme-border: #D5E4D3;
+    --theme-text-main: #192A1D;
+    --theme-text-muted: #56715B;
+    --theme-primary: #176B35;
+    --theme-primary-hover: #12562A;
+    --theme-primary-text: #FFFFFF;
+    --theme-secondary: #2E8B45;
+    --theme-accent: #A3E635;
+    --theme-hero-from: #14532D;
+    --theme-hero-via: #166534;
+    --theme-hero-to: #14532D;
+    --theme-hero-text: #FFFFFF;
+    --theme-card-bg: #FFFFFF;
+    --theme-card-border: #D5E4D3;
+    --theme-header-bg: #FFFFFF;
+    --theme-footer-bg: #111C13;
+    --theme-input-bg: #FFFFFF;
+    --theme-badge-bg: #DCFCE7;
+    --theme-badge-text: #15803D;
+  }
+
+  /* -------------------------------------------------------------
+     3. FRESH LIME THEME
+     Soft green surfaces with lime accents
+     ------------------------------------------------------------- */
+  :root.theme-fresh-lime,
+  [data-theme="fresh-lime"] {
     --theme-bg: #F7FEE7;
     --theme-surface: #FFFFFF;
     --theme-surface-subtle: #ECFCCA;
     --theme-border: #D9F99D;
+    --theme-text-main: #142B0D;
+    --theme-text-muted: #4D683A;
+    --theme-primary: #16A34A;
+    --theme-primary-hover: #15803D;
+    --theme-primary-text: #FFFFFF;
+    --theme-secondary: #22C55E;
+    --theme-accent: #84CC16;
     --theme-hero-from: #166534;
     --theme-hero-via: #15803D;
     --theme-hero-to: #166534;
+    --theme-hero-text: #FFFFFF;
+    --theme-card-bg: #FFFFFF;
+    --theme-card-border: #D9F99D;
+    --theme-header-bg: #FFFFFF;
+    --theme-footer-bg: #142B0D;
+    --theme-input-bg: #FFFFFF;
+    --theme-badge-bg: #ECFCCA;
+    --theme-badge-text: #15803D;
   }
 
-  /* 3. Harvest Gold Theme */
-  :root.theme-harvest-gold {
-    --theme-primary: #854D0E;
-    --theme-primary-hover: #713F12;
-    --theme-secondary: #CA8A04;
-    --theme-accent: #EAB308;
+  /* -------------------------------------------------------------
+     4. HARVEST GOLD THEME
+     Warm cream surfaces with golden-yellow and green highlights
+     ------------------------------------------------------------- */
+  :root.theme-harvest-gold,
+  [data-theme="harvest-gold"] {
     --theme-bg: #FEFCE8;
     --theme-surface: #FFFFFF;
     --theme-surface-subtle: #FEF9C3;
     --theme-border: #FEF08A;
+    --theme-text-main: #291E0B;
+    --theme-text-muted: #786134;
+    --theme-primary: #854D0E;
+    --theme-primary-hover: #713F12;
+    --theme-primary-text: #FFFFFF;
+    --theme-secondary: #CA8A04;
+    --theme-accent: #EAB308;
     --theme-hero-from: #713F12;
     --theme-hero-via: #854D0E;
     --theme-hero-to: #713F12;
+    --theme-hero-text: #FFFFFF;
+    --theme-card-bg: #FFFFFF;
+    --theme-card-border: #FEF08A;
+    --theme-header-bg: #FFFFFF;
+    --theme-footer-bg: #291E0B;
+    --theme-input-bg: #FFFFFF;
+    --theme-badge-bg: #FEF9C3;
+    --theme-badge-text: #854D0E;
   }
 
-  /* 4. Earth Brown Theme */
-  :root.theme-earth-brown {
+  /* -------------------------------------------------------------
+     5. EARTH BROWN THEME
+     Natural beige and brown colours with green accents
+     ------------------------------------------------------------- */
+  :root.theme-earth-brown,
+  [data-theme="earth-brown"] {
+    --theme-bg: #FAF6F0;
+    --theme-surface: #FFFFFF;
+    --theme-surface-subtle: #F5EBE1;
+    --theme-border: #EADBC8;
+    --theme-text-main: #2E1B10;
+    --theme-text-muted: #755642;
     --theme-primary: #78350F;
     --theme-primary-hover: #5F2B0C;
+    --theme-primary-text: #FFFFFF;
     --theme-secondary: #8B5E3C;
     --theme-accent: #D97706;
-    --theme-bg: #FFFBEB;
-    --theme-surface: #FFFFFF;
-    --theme-surface-subtle: #FEF3C7;
-    --theme-border: #FDE68A;
     --theme-hero-from: #5F2B0C;
     --theme-hero-via: #78350F;
     --theme-hero-to: #5F2B0C;
+    --theme-hero-text: #FFFFFF;
+    --theme-card-bg: #FFFFFF;
+    --theme-card-border: #EADBC8;
+    --theme-header-bg: #FFFFFF;
+    --theme-footer-bg: #2E1B10;
+    --theme-input-bg: #FFFFFF;
+    --theme-badge-bg: #F5EBE1;
+    --theme-badge-text: #78350F;
   }
 
-  /* 5. Forest Dark Theme */
+  /* -------------------------------------------------------------
+     6. PURE BLACK THEME
+     True black backgrounds, readable white text, and green accents
+     ------------------------------------------------------------- */
+  :root.theme-pure-black,
+  [data-theme="pure-black"] {
+    --theme-bg: #000000;
+    --theme-surface: #0D0D0D;
+    --theme-surface-subtle: #171717;
+    --theme-border: #262626;
+    --theme-text-main: #FFFFFF;
+    --theme-text-muted: #A3A3A3;
+    --theme-primary: #22C55E;
+    --theme-primary-hover: #16A34A;
+    --theme-primary-text: #000000;
+    --theme-secondary: #4ADE80;
+    --theme-accent: #86EFAC;
+    --theme-hero-from: #000000;
+    --theme-hero-via: #0A0A0A;
+    --theme-hero-to: #000000;
+    --theme-hero-text: #FFFFFF;
+    --theme-card-bg: #0D0D0D;
+    --theme-card-border: #262626;
+    --theme-header-bg: #000000;
+    --theme-footer-bg: #050505;
+    --theme-input-bg: #141414;
+    --theme-badge-bg: #14532D;
+    --theme-badge-text: #86EFAC;
+  }
+
+  /* -------------------------------------------------------------
+     7. FOREST DARK THEME
+     Dark forest-green surfaces with high-contrast text
+     ------------------------------------------------------------- */
   :root.theme-forest-dark,
-  :root.dark {
-    --theme-primary: #15803D;
-    --theme-primary-hover: #22C55E;
+  [data-theme="forest-dark"] {
+    --theme-bg: #071C11;
+    --theme-surface: #0C2B1B;
+    --theme-surface-subtle: #133A26;
+    --theme-border: #1C5436;
+    --theme-text-main: #F0FDF4;
+    --theme-text-muted: #86EFAC;
+    --theme-primary: #10B981;
+    --theme-primary-hover: #059669;
+    --theme-primary-text: #FFFFFF;
     --theme-secondary: #22A447;
     --theme-accent: #A3E635;
-    --theme-bg: #071C11;
-    --theme-surface: #0E2E1D;
-    --theme-surface-subtle: #143E28;
-    --theme-border: #1C5436;
-    --theme-text-main: #F2FDF5;
-    --theme-text-muted: #94A3B8;
     --theme-hero-from: #061F12;
     --theme-hero-via: #092B19;
     --theme-hero-to: #061F12;
+    --theme-hero-text: #F0FDF4;
+    --theme-card-bg: #0C2B1B;
+    --theme-card-border: #1C5436;
+    --theme-header-bg: #071C11;
+    --theme-footer-bg: #04120B;
+    --theme-input-bg: #0C2B1B;
+    --theme-badge-bg: #143E28;
+    --theme-badge-text: #86EFAC;
   }
 
   body {
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background-color: var(--theme-bg);
-    color: var(--theme-text-main);
+    background-color: var(--theme-bg) !important;
+    color: var(--theme-text-main) !important;
     transition: background-color 0.25s ease, color 0.25s ease;
   }
 
@@ -118,60 +252,129 @@
   }
 }
 
-/* Animations for floating agricultural background */
-@keyframes float-slow {
-  0%, 100% {
-    transform: translateY(0px) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-18px) rotate(4deg);
-  }
+/* =============================================================
+   UNIVERSAL THEME DESIGN TOKEN CLASSES
+   ============================================================= */
+
+.app-container {
+  background-color: var(--theme-bg);
+  color: var(--theme-text-main);
 }
 
-@keyframes float-drift {
-  0%, 100% {
-    transform: translate(0px, 0px) rotate(0deg);
-  }
-  33% {
-    transform: translate(12px, -14px) rotate(6deg);
-  }
-  66% {
-    transform: translate(-10px, -8px) rotate(-4deg);
-  }
+.theme-card {
+  background-color: var(--theme-card-bg) !important;
+  border-color: var(--theme-card-border) !important;
+  color: var(--theme-text-main) !important;
 }
 
-@keyframes float-reverse {
-  0%, 100% {
-    transform: translateY(0px) rotate(0deg);
-  }
-  50% {
-    transform: translateY(16px) rotate(-5deg);
-  }
+.theme-surface {
+  background-color: var(--theme-surface) !important;
+  color: var(--theme-text-main) !important;
 }
 
-@keyframes sway-gentle {
-  0%, 100% {
-    transform: rotate(-3deg);
-  }
-  50% {
-    transform: rotate(3deg);
-  }
+.theme-surface-subtle {
+  background-color: var(--theme-surface-subtle) !important;
 }
 
-.animate-float-slow {
-  animation: float-slow 7s ease-in-out infinite;
+.theme-input {
+  background-color: var(--theme-input-bg) !important;
+  border-color: var(--theme-border) !important;
+  color: var(--theme-text-main) !important;
 }
 
-.animate-float-drift {
-  animation: float-drift 10s ease-in-out infinite;
+.theme-border {
+  border-color: var(--theme-border) !important;
 }
 
-.animate-float-reverse {
-  animation: float-reverse 8s ease-in-out infinite;
+.theme-text {
+  color: var(--theme-text-main) !important;
 }
 
-.animate-sway-gentle {
-  animation: sway-gentle 6s ease-in-out infinite alternate;
+.theme-text-muted {
+  color: var(--theme-text-muted) !important;
+}
+
+.theme-btn-primary {
+  background-color: var(--theme-primary) !important;
+  color: var(--theme-primary-text) !important;
+}
+
+.theme-btn-primary:hover {
+  background-color: var(--theme-primary-hover) !important;
+}
+
+/* =============================================================
+   GLOBAL THEME CASCADES FOR REUSABLE BLOCKS (CARDS, TABLES, FORMS)
+   ============================================================= */
+
+:root.theme-pure-black .bg-white,
+:root.theme-pure-black .dark\:bg-stone-900,
+:root.theme-pure-black .dark\:bg-stone-800 {
+  background-color: #0D0D0D !important;
+  border-color: #262626 !important;
+  color: #FFFFFF !important;
+}
+
+:root.theme-pure-black .border-stone-200,
+:root.theme-pure-black .border-stone-300,
+:root.theme-pure-black .dark\:border-stone-800,
+:root.theme-pure-black .dark\:border-stone-700 {
+  border-color: #262626 !important;
+}
+
+:root.theme-pure-black .text-stone-900,
+:root.theme-pure-black .text-stone-800 {
+  color: #FFFFFF !important;
+}
+
+:root.theme-pure-black .text-stone-600,
+:root.theme-pure-black .text-stone-500 {
+  color: #A3A3A3 !important;
+}
+
+:root.theme-forest-dark .bg-white,
+:root.theme-forest-dark .dark\:bg-stone-900,
+:root.theme-forest-dark .dark\:bg-stone-800 {
+  background-color: #0C2B1B !important;
+  border-color: #1C5436 !important;
+  color: #F0FDF4 !important;
+}
+
+:root.theme-forest-dark .border-stone-200,
+:root.theme-forest-dark .border-stone-300,
+:root.theme-forest-dark .dark\:border-stone-800,
+:root.theme-forest-dark .dark\:border-stone-700 {
+  border-color: #1C5436 !important;
+}
+
+:root.theme-forest-dark .text-stone-900,
+:root.theme-forest-dark .text-stone-800 {
+  color: #F0FDF4 !important;
+}
+
+:root.theme-forest-dark .text-stone-600,
+:root.theme-forest-dark .text-stone-500 {
+  color: #86EFAC !important;
+}
+
+:root.theme-fresh-lime .border-stone-200,
+:root.theme-fresh-lime .border-stone-300 {
+  border-color: #D9F99D !important;
+}
+
+:root.theme-harvest-gold .border-stone-200,
+:root.theme-harvest-gold .border-stone-300 {
+  border-color: #FEF08A !important;
+}
+
+:root.theme-earth-brown .border-stone-200,
+:root.theme-earth-brown .border-stone-300 {
+  border-color: #EADBC8 !important;
+}
+
+:root.theme-bright-white .border-stone-200,
+:root.theme-bright-white .border-stone-300 {
+  border-color: #E2E8F0 !important;
 }
 
 /* Reduced Motion Override */

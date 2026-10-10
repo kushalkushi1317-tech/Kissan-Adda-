@@ -51,19 +51,22 @@ export const Header: React.FC = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-40 bg-white dark:bg-stone-900 border-b border-stone-200/90 dark:border-stone-800 shadow-xs transition-colors">
+      <header 
+        className="sticky top-0 z-40 border-b shadow-xs transition-colors"
+        style={{ backgroundColor: 'var(--theme-header-bg)', borderColor: 'var(--theme-border)' }}
+      >
         {/* Top Announcement Bar */}
         <div 
-          style={{ backgroundColor: 'var(--theme-primary, #14532D)' }} 
-          className="text-white text-xs py-1.5 px-4 hidden md:block transition-colors duration-300"
+          style={{ backgroundColor: 'var(--theme-primary, #14532D)', color: 'var(--theme-primary-text, #FFFFFF)' }} 
+          className="text-xs py-1.5 px-4 hidden md:block transition-colors duration-300"
         >
           <div className="max-w-7xl mx-auto flex items-center justify-between">
             <div className="flex items-center gap-3">
               <span className="font-medium tracking-wide">
                 {t('mainTagline', "Know Today's Price. Sell at the Right Price.")}
               </span>
-              <span className="text-emerald-400/60" aria-hidden="true">|</span>
-              <span className="text-emerald-100/90 hidden lg:inline text-[11px]">
+              <span className="opacity-40" aria-hidden="true">|</span>
+              <span className="opacity-90 hidden lg:inline text-[11px]">
                 {t('secondaryTagline', 'Your Trusted Partner for Smart Farming and Better Crop Prices.')}
               </span>
             </div>
@@ -71,13 +74,13 @@ export const Header: React.FC = () => {
             <div className="flex items-center gap-4 text-[11px]">
               <a 
                 href="tel:18001801551" 
-                className="flex items-center gap-1.5 text-emerald-100 hover:text-white transition-colors"
+                className="flex items-center gap-1.5 hover:opacity-100 transition-opacity"
               >
                 <PhoneCall className="w-3 h-3 text-amber-300" />
                 <span>Kisan Helpline: <strong>1800-180-1551</strong></span>
               </a>
-              <span className="text-emerald-400/60" aria-hidden="true">•</span>
-              <span className="text-emerald-200">22 Regional Languages Supported</span>
+              <span className="opacity-40" aria-hidden="true">•</span>
+              <span className="opacity-90">12 Regional Languages Supported</span>
             </div>
           </div>
         </div>
@@ -88,20 +91,29 @@ export const Header: React.FC = () => {
             {/* Brand Logo */}
             <button 
               onClick={() => handleNavClick('/')}
-              className="flex items-center gap-2.5 sm:gap-3 group text-left shrink-0 focus:outline-hidden"
+              className="flex items-center gap-2.5 sm:gap-3 group text-left shrink-0 focus:outline-hidden cursor-pointer"
             >
-              <div className="w-10 sm:w-11 h-10 sm:h-11 rounded-xl bg-gradient-to-br from-[#14532D] to-[#22A447] text-white flex items-center justify-center shadow-md shadow-emerald-950/10 group-hover:scale-105 transition-transform">
-                <svg className="w-6 h-6 fill-current text-emerald-100" viewBox="0 0 24 24">
+              <div 
+                className="w-10 sm:w-11 h-10 sm:h-11 rounded-xl text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform"
+                style={{ background: 'linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-secondary) 100%)' }}
+              >
+                <svg className="w-6 h-6 fill-current text-white" viewBox="0 0 24 24">
                   <path d="M12 2C6.5 2 2 6.5 2 12c0 3.58 1.9 6.72 4.74 8.46L12 12V2zm0 10l5.26 8.46C20.1 18.72 22 15.58 22 12c0-5.5-4.5-10-10-10v10z" />
                 </svg>
               </div>
               <div>
                 <div className="flex items-center gap-1.5">
-                  <span className="text-lg sm:text-xl font-extrabold tracking-tight text-[#14532D] dark:text-emerald-400 font-serif">
+                  <span 
+                    className="text-lg sm:text-xl font-extrabold tracking-tight font-serif"
+                    style={{ color: 'var(--theme-text-main)' }}
+                  >
                     KISSAN ADDA
                   </span>
                 </div>
-                <p className="text-[10px] uppercase font-semibold tracking-wider text-stone-500 dark:text-stone-400">
+                <p 
+                  className="text-[10px] uppercase font-semibold tracking-wider"
+                  style={{ color: 'var(--theme-text-muted)' }}
+                >
                   {t('brandName', 'Kissan Adda')} · Mandi Prices
                 </p>
               </div>
@@ -115,15 +127,22 @@ export const Header: React.FC = () => {
                   <button
                     key={item.path}
                     onClick={() => handleNavClick(item.path)}
-                    className={`px-2.5 py-1.5 text-xs font-semibold rounded-lg transition-colors relative ${
-                      isActive 
-                        ? 'text-emerald-800 dark:text-emerald-300 font-bold bg-emerald-50/80 dark:bg-emerald-950/60' 
-                        : 'text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white hover:bg-stone-50 dark:hover:bg-stone-800'
+                    style={isActive ? { 
+                      color: 'var(--theme-primary)', 
+                      backgroundColor: 'var(--theme-surface-subtle)' 
+                    } : {
+                      color: 'var(--theme-text-muted)'
+                    }}
+                    className={`px-2.5 py-1.5 text-xs font-semibold rounded-lg transition-colors relative cursor-pointer hover:opacity-100 ${
+                      isActive ? 'font-bold' : 'hover:bg-stone-500/10'
                     }`}
                   >
                     {item.label}
                     {isActive && (
-                      <span className="absolute bottom-0 left-2 right-2 h-0.5 bg-emerald-600 dark:bg-emerald-400 rounded-full" />
+                      <span 
+                        className="absolute bottom-0 left-2 right-2 h-0.5 rounded-full"
+                        style={{ backgroundColor: 'var(--theme-primary)' }}
+                      />
                     )}
                   </button>
                 );

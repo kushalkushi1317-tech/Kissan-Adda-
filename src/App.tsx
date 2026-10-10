@@ -1,4 +1,5 @@
 import React from 'react';
+import { ThemeProvider } from './context/ThemeContext';
 import { LanguageProvider } from './context/LanguageContext';
 import { PriceDataProvider } from './context/PriceDataContext';
 import { RouterProvider, useRouter } from './context/RouterContext';
@@ -7,6 +8,7 @@ import { Footer } from './components/Footer';
 import { DataDisclaimerBanner } from './components/DataDisclaimerBanner';
 import { HomePage } from './pages/HomePage';
 import { PricesPage } from './pages/PricesPage';
+import { CropDirectoryPage } from './pages/CropDirectoryPage';
 import { CropDetailPage } from './pages/CropDetailPage';
 import { ComparePage } from './pages/ComparePage';
 import { TrendsPage } from './pages/TrendsPage';
@@ -25,6 +27,9 @@ const AppContent: React.FC = () => {
     }
     if (path === '/prices') {
       return <PricesPage />;
+    }
+    if (path === '/directory') {
+      return <CropDirectoryPage />;
     }
     if (path.startsWith('/crops/')) {
       return <CropDetailPage />;
@@ -50,12 +55,11 @@ const AppContent: React.FC = () => {
     if (path === '/admin') {
       return <AdminPage />;
     }
-    // Default fallback to Home
     return <HomePage />;
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F5F8F3] text-stone-900 font-sans selection:bg-[#2E8B45]/20 selection:text-[#176B35]">
+    <div className="min-h-screen flex flex-col bg-[#FFFDF2] dark:bg-[#071C11] text-stone-900 dark:text-stone-100 font-sans selection:bg-emerald-500/20 selection:text-emerald-900 transition-colors">
       <Header />
       <DataDisclaimerBanner />
       <main className="flex-1">
@@ -68,12 +72,14 @@ const AppContent: React.FC = () => {
 
 export default function App() {
   return (
-    <LanguageProvider>
-      <PriceDataProvider>
-        <RouterProvider>
-          <AppContent />
-        </RouterProvider>
-      </PriceDataProvider>
-    </LanguageProvider>
+    <ThemeProvider>
+      <LanguageProvider>
+        <PriceDataProvider>
+          <RouterProvider>
+            <AppContent />
+          </RouterProvider>
+        </PriceDataProvider>
+      </LanguageProvider>
+    </ThemeProvider>
   );
 }

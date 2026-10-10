@@ -10,22 +10,32 @@ import {
   Search,
   ShieldCheck,
   PhoneCall,
-  Info
+  Star,
+  BookOpen
 } from 'lucide-react';
 import { useRouter } from '../context/RouterContext';
 import { useLanguage } from '../context/LanguageContext';
 import { usePriceData } from '../context/PriceDataContext';
+import { useTheme } from '../context/ThemeContext';
+import { ThemeSelector } from './ThemeSelector';
+import { WatchlistModal } from './WatchlistModal';
 import { Language } from '../types';
 
 export const Header: React.FC = () => {
   const { path, navigate } = useRouter();
-  const { language, setLanguage, t } = useLanguage();
-  const { unit, setUnit } = usePriceData();
+  const { language, setLanguage, t, availableLanguages } = useLanguage();
+  const { unit, setUnit, watchlist } = usePriceData();
+  const { isDark } = useTheme();
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [watchlistModalOpen, setWatchlistModalOpen] = useState(false);
+
+  const totalWatchlistCount = watchlist.cropIds.length + watchlist.mandiIds.length;
 
   const navItems = [
     { label: t('navHome', 'Home'), path: '/' },
     { label: t('navPrices', 'Crop Prices'), path: '/prices' },
+    { label: t('navDirectory', 'Crop Directory'), path: '/directory' },
     { label: t('navCompare', 'Compare Markets'), path: '/compare' },
     { label: t('navTrends', 'Price Trends'), path: '/trends' },
     { label: t('navMarkets', 'Market Directory'), path: '/markets' },
@@ -40,171 +50,220 @@ export const Header: React.FC = () => {
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-white border-b border-stone-200/90 shadow-xs">
-      {/* Top microbar */}
-      <div className="bg-[#176B35] text-white text-xs py-1.5 px-4 hidden md:block">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <span className="font-medium tracking-wide">
-              {t('mainTagline', "Know Today's Price. Sell at the Right Price.")}
-            </span>
-            <span className="text-emerald-300/60" aria-hidden="true">|</span>
-            <span className="text-emerald-100/90 hidden lg:inline text-[11px]">
-              {t('secondaryTagline', 'Your Trusted Partner for Smart Farming and Better Crop Prices.')}
-            </span>
-          </div>
+    <>
+      <header className="sticky top-0 z-40 bg-white dark:bg-stone-900 border-b border-stone-200/90 dark:border-stone-800 shadow-xs transition-colors">
+        {/* Top Announcement Bar */}
+        <div 
+          style={{ backgroundColor: 'var(--theme-primary, #14532D)' }} 
+          className="text-white text-xs py-1.5 px-4 hidden md:block transition-colors duration-300"
+        >
+          <div className="max-w-7xl mx-auto flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <span className="font-medium tracking-wide">
+                {t('mainTagline', "Know Today's Price. Sell at the Right Price.")}
+              </span>
+              <span className="text-emerald-400/60" aria-hidden="true">|</span>
+              <span className="text-emerald-100/90 hidden lg:inline text-[11px]">
+                {t('secondaryTagline', 'Your Trusted Partner for Smart Farming and Better Crop Prices.')}
+              </span>
+            </div>
 
-          <div className="flex items-center gap-4 text-[11px]">
-            <a 
-              href="tel:18001801551" 
-              className="flex items-center gap-1.5 text-emerald-100 hover:text-white transition-colors"
-            >
-              <PhoneCall className="w-3 h-3 text-amber-300" />
-              <span>Kisan Helpline: <strong>1800-180-1551</strong></span>
-            </a>
-            <span className="text-emerald-400/60" aria-hidden="true">•</span>
-            <span className="text-emerald-200">APMC Live Mandi Network</span>
+            <div className="flex items-center gap-4 text-[11px]">
+              <a 
+                href="tel:18001801551" 
+                className="flex items-center gap-1.5 text-emerald-100 hover:text-white transition-colors"
+              >
+                <PhoneCall className="w-3 h-3 text-amber-300" />
+                <span>Kisan Helpline: <strong>1800-180-1551</strong></span>
+              </a>
+              <span className="text-emerald-400/60" aria-hidden="true">•</span>
+              <span className="text-emerald-200">22 Regional Languages Supported</span>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Main navigation bar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="flex items-center justify-between h-18 gap-4">
-          {/* Brand Logo */}
-          <button 
-            onClick={() => handleNavClick('/')}
-            className="flex items-center gap-3 group text-left shrink-0 focus:outline-hidden"
-          >
-            <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#176B35] to-[#2E8B45] text-white flex items-center justify-center shadow-md shadow-emerald-950/10 group-hover:scale-105 transition-transform">
-              {/* Wheat / Leaf sprout graphic */}
-              <svg 
-                className="w-6 h-6 fill-current text-emerald-100" 
-                viewBox="0 0 24 24"
-              >
-                <path d="M12 2C6.5 2 2 6.5 2 12c0 3.58 1.9 6.72 4.74 8.46L12 12V2zm0 10l5.26 8.46C20.1 18.72 22 15.58 22 12c0-5.5-4.5-10-10-10v10z" />
-                <path d="M12 8c-2.2 0-4 1.8-4 4s1.8 4 4 4 4-1.8 4-4-1.8-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z" opacity="0.3" />
-              </svg>
-            </div>
-            <div>
-              <div className="flex items-center gap-1.5">
-                <span className="text-xl font-extrabold tracking-tight text-[#176B35] font-serif">
-                  KISSAN ADDA
-                </span>
+        {/* Main Navbar */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="flex items-center justify-between h-18 gap-3 sm:gap-4">
+            {/* Brand Logo */}
+            <button 
+              onClick={() => handleNavClick('/')}
+              className="flex items-center gap-2.5 sm:gap-3 group text-left shrink-0 focus:outline-hidden"
+            >
+              <div className="w-10 sm:w-11 h-10 sm:h-11 rounded-xl bg-gradient-to-br from-[#14532D] to-[#22A447] text-white flex items-center justify-center shadow-md shadow-emerald-950/10 group-hover:scale-105 transition-transform">
+                <svg className="w-6 h-6 fill-current text-emerald-100" viewBox="0 0 24 24">
+                  <path d="M12 2C6.5 2 2 6.5 2 12c0 3.58 1.9 6.72 4.74 8.46L12 12V2zm0 10l5.26 8.46C20.1 18.72 22 15.58 22 12c0-5.5-4.5-10-10-10v10z" />
+                </svg>
               </div>
-              <p className="text-[10px] uppercase font-semibold tracking-wider text-stone-500">
-                {t('brandName', 'Kissan Adda')} · Mandi Prices
-              </p>
-            </div>
-          </button>
+              <div>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-lg sm:text-xl font-extrabold tracking-tight text-[#14532D] dark:text-emerald-400 font-serif">
+                    KISSAN ADDA
+                  </span>
+                </div>
+                <p className="text-[10px] uppercase font-semibold tracking-wider text-stone-500 dark:text-stone-400">
+                  {t('brandName', 'Kissan Adda')} · Mandi Prices
+                </p>
+              </div>
+            </button>
 
-          {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-1">
+            {/* Desktop Navigation Links */}
+            <nav className="hidden xl:flex items-center gap-1">
+              {navItems.map((item) => {
+                const isActive = path === item.path || (item.path !== '/' && path.startsWith(item.path));
+                return (
+                  <button
+                    key={item.path}
+                    onClick={() => handleNavClick(item.path)}
+                    className={`px-2.5 py-1.5 text-xs font-semibold rounded-lg transition-colors relative ${
+                      isActive 
+                        ? 'text-emerald-800 dark:text-emerald-300 font-bold bg-emerald-50/80 dark:bg-emerald-950/60' 
+                        : 'text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white hover:bg-stone-50 dark:hover:bg-stone-800'
+                    }`}
+                  >
+                    {item.label}
+                    {isActive && (
+                      <span className="absolute bottom-0 left-2 right-2 h-0.5 bg-emerald-600 dark:bg-emerald-400 rounded-full" />
+                    )}
+                  </button>
+                );
+              })}
+            </nav>
+
+            {/* Right Controls */}
+            <div className="flex items-center gap-2 sm:gap-2.5">
+              {/* Watchlist Quick Button */}
+              <button
+                onClick={() => setWatchlistModalOpen(true)}
+                title={t('navWatchlist', 'My Watchlist')}
+                className="relative p-2 rounded-lg text-stone-600 dark:text-stone-300 hover:text-amber-600 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+                aria-label="Open watchlist"
+              >
+                <Star className="w-4 h-4 text-amber-500" />
+                {totalWatchlistCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-amber-500 text-stone-950 text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-xs">
+                    {totalWatchlistCount}
+                  </span>
+                )}
+              </button>
+
+              {/* Theme & Dark Mode Controls */}
+              <ThemeSelector />
+
+              {/* Unit Toggle: Quintal vs Kg */}
+              <div 
+                className="hidden sm:flex items-center bg-stone-100 dark:bg-stone-800 p-0.5 rounded-lg border border-stone-200 dark:border-stone-700" 
+                title={t('unitQuintalDesc')}
+              >
+                <button
+                  onClick={() => setUnit('quintal')}
+                  className={`px-2 py-1 text-xs font-semibold rounded-md transition-all ${
+                    unit === 'quintal'
+                      ? 'bg-[#14532D] dark:bg-emerald-600 text-white shadow-xs'
+                      : 'text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white'
+                  }`}
+                >
+                  ₹/Qtl
+                </button>
+                <button
+                  onClick={() => setUnit('kg')}
+                  className={`px-2 py-1 text-xs font-semibold rounded-md transition-all ${
+                    unit === 'kg'
+                      ? 'bg-[#14532D] dark:bg-emerald-600 text-white shadow-xs'
+                      : 'text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white'
+                  }`}
+                >
+                  ₹/Kg
+                </button>
+              </div>
+
+              {/* 12-Language Selector */}
+              <div className="relative flex items-center bg-stone-50 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-lg px-2 py-1">
+                <Languages className="w-3.5 h-3.5 text-stone-500 dark:text-stone-400 mr-1.5 shrink-0" />
+                <select
+                  value={language}
+                  onChange={(e) => setLanguage(e.target.value as Language)}
+                  className="bg-transparent text-xs font-semibold text-stone-800 dark:text-stone-200 focus:outline-hidden cursor-pointer pr-1"
+                  aria-label="Select Language"
+                >
+                  {Object.entries(availableLanguages).map(([code, meta]) => (
+                    <option key={code} value={code} className="bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-100">
+                      {meta.nativeName} ({meta.code.toUpperCase()})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Mobile Hamburger Button */}
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="xl:hidden p-2 text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg focus:outline-hidden"
+                aria-label="Toggle navigation menu"
+              >
+                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile Drawer Menu */}
+        {mobileMenuOpen && (
+          <div className="xl:hidden border-t border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 px-4 py-4 space-y-1 shadow-lg animate-in slide-in-from-top duration-200">
+            <div className="mb-3 px-3 py-2 bg-emerald-50 dark:bg-emerald-950/60 rounded-lg border border-emerald-100 dark:border-emerald-800 text-xs text-emerald-900 dark:text-emerald-200 flex items-center justify-between">
+              <span className="font-semibold">{t('mainTagline', "Know Today's Price. Sell at the Right Price.")}</span>
+              <button 
+                onClick={() => { setWatchlistModalOpen(true); setMobileMenuOpen(false); }}
+                className="text-amber-600 dark:text-amber-400 font-bold flex items-center gap-1"
+              >
+                <Star className="w-3.5 h-3.5 fill-current" />
+                <span>Watchlist ({totalWatchlistCount})</span>
+              </button>
+            </div>
+
             {navItems.map((item) => {
               const isActive = path === item.path || (item.path !== '/' && path.startsWith(item.path));
               return (
                 <button
                   key={item.path}
                   onClick={() => handleNavClick(item.path)}
-                  className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors relative ${
+                  className={`w-full text-left px-3 py-2.5 text-xs font-semibold rounded-lg flex items-center justify-between ${
                     isActive 
-                      ? 'text-[#176B35] font-semibold bg-emerald-50/70' 
-                      : 'text-stone-600 hover:text-stone-900 hover:bg-stone-50'
+                      ? 'bg-emerald-50 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 font-bold' 
+                      : 'text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800'
                   }`}
                 >
-                  {item.label}
-                  {isActive && (
-                    <span className="absolute bottom-0 left-3 right-3 h-0.5 bg-[#2E8B45] rounded-full" />
-                  )}
+                  <span>{item.label}</span>
+                  {isActive && <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />}
                 </button>
               );
             })}
-          </nav>
 
-          {/* Right Controls: Unit switch & Language Selector */}
-          <div className="flex items-center gap-2 sm:gap-3">
-            {/* Unit Toggle: Quintal vs Kg */}
-            <div className="flex items-center bg-stone-100 p-0.5 rounded-lg border border-stone-200" title={t('unitQuintalDesc')}>
-              <button
-                onClick={() => setUnit('quintal')}
-                className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all ${
-                  unit === 'quintal'
-                    ? 'bg-[#176B35] text-white shadow-xs'
-                    : 'text-stone-600 hover:text-stone-900'
-                }`}
-              >
-                ₹/Qtl
-              </button>
-              <button
-                onClick={() => setUnit('kg')}
-                className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all ${
-                  unit === 'kg'
-                    ? 'bg-[#176B35] text-white shadow-xs'
-                    : 'text-stone-600 hover:text-stone-900'
-                }`}
-              >
-                ₹/Kg
-              </button>
+            <div className="pt-3 border-t border-stone-100 dark:border-stone-800 mt-2 flex items-center justify-between text-xs text-stone-500 dark:text-stone-400 px-2">
+              <span>Helpline: 1800-180-1551</span>
+              <div className="flex items-center gap-1">
+                <button 
+                  onClick={() => setUnit('quintal')}
+                  className={`px-2 py-0.5 rounded text-[11px] ${unit === 'quintal' ? 'bg-emerald-700 text-white' : 'bg-stone-100 dark:bg-stone-800'}`}
+                >
+                  ₹/Qtl
+                </button>
+                <button 
+                  onClick={() => setUnit('kg')}
+                  className={`px-2 py-0.5 rounded text-[11px] ${unit === 'kg' ? 'bg-emerald-700 text-white' : 'bg-stone-100 dark:bg-stone-800'}`}
+                >
+                  ₹/Kg
+                </button>
+              </div>
             </div>
-
-            {/* Language Selector */}
-            <div className="relative flex items-center bg-stone-50 border border-stone-200 rounded-lg px-2 py-1">
-              <Languages className="w-3.5 h-3.5 text-stone-500 mr-1.5 shrink-0" />
-              <select
-                value={language}
-                onChange={(e) => setLanguage(e.target.value as Language)}
-                className="bg-transparent text-xs font-semibold text-stone-800 focus:outline-hidden cursor-pointer pr-1"
-                aria-label="Select Language"
-              >
-                <option value="en">English (EN)</option>
-                <option value="hi">हिन्दी (HI)</option>
-                <option value="te">తెలుగు (TE)</option>
-              </select>
-            </div>
-
-            {/* Mobile Hamburger Button */}
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 text-stone-600 hover:text-stone-900 hover:bg-stone-100 rounded-lg focus:outline-hidden"
-              aria-label="Toggle navigation menu"
-            >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
           </div>
-        </div>
-      </div>
+        )}
+      </header>
 
-      {/* Mobile Drawer Menu */}
-      {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-stone-200 bg-white px-4 py-4 space-y-1 shadow-lg animate-in slide-in-from-top duration-200">
-          <div className="mb-3 px-2 py-2 bg-emerald-50/70 rounded-lg border border-emerald-100 text-xs text-emerald-900">
-            <span className="font-semibold">{t('mainTagline', "Know Today's Price. Sell at the Right Price.")}</span>
-          </div>
-
-          {navItems.map((item) => {
-            const isActive = path === item.path || (item.path !== '/' && path.startsWith(item.path));
-            return (
-              <button
-                key={item.path}
-                onClick={() => handleNavClick(item.path)}
-                className={`w-full text-left px-3 py-2.5 text-sm font-medium rounded-lg flex items-center justify-between ${
-                  isActive 
-                    ? 'bg-emerald-50 text-[#176B35] font-semibold' 
-                    : 'text-stone-700 hover:bg-stone-50'
-                }`}
-              >
-                <span>{item.label}</span>
-                {isActive && <span className="w-1.5 h-1.5 rounded-full bg-[#176B35]" />}
-              </button>
-            );
-          })}
-
-          <div className="pt-3 border-t border-stone-100 mt-2 flex items-center justify-between text-xs text-stone-500 px-2">
-            <span>Helpline: 1800-180-1551</span>
-            <span>Unit: {unit === 'quintal' ? '₹/Quintal' : '₹/Kg'}</span>
-          </div>
-        </div>
-      )}
-    </header>
+      {/* Watchlist Modal */}
+      <WatchlistModal 
+        isOpen={watchlistModalOpen} 
+        onClose={() => setWatchlistModalOpen(false)} 
+      />
+    </>
   );
 };

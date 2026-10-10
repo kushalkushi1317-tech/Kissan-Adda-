@@ -1,6 +1,6 @@
-import { Crop, Mandi, MarketPriceRecord, HistoricalPricePoint } from '../types';
+import { Crop, Mandi, MarketPriceRecord, HistoricalPricePoint, CropCategory } from '../types';
 
-export const CROP_CATEGORIES = [
+export const CROP_CATEGORIES: CropCategory[] = [
   'Vegetables',
   'Fruits',
   'Grains & Cereals',
@@ -8,25 +8,37 @@ export const CROP_CATEGORIES = [
   'Spices',
   'Oilseeds',
   'Commercial Crops',
-] as const;
+  'Plantation Crops',
+];
 
 export const CROPS: Crop[] = [
+  // --- VEGETABLES ---
   {
     id: 'tomato',
     name: 'Tomato',
     hindiName: 'टमाटर',
     teluguName: 'టమాట',
+    regionalNames: {
+      hi: 'टमाटर', kn: 'ಟೊಮೆಟೊ', ta: 'தக்காளி', ml: 'തക്കാളി',
+      te: 'టమాట', mr: 'टोमॅटो', bn: 'টমেটো', gu: 'ટામેટા',
+      pa: 'ਟਮਾਟਰ', or: 'ଟମାଟୋ', as: 'বিলাহী'
+    },
     category: 'Vegetables',
     imageUrl: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=800&auto=format&fit=crop&q=80',
     defaultVariety: 'Hybrid / Desi',
     season: 'All Year',
-    description: 'One of the most widely cultivated perishable vegetables in India. Critical daily price tracking across Kolar, Azadpur, and Nashik mandis.',
+    description: 'Crucial perishable kitchen staple. Critical daily price tracking across Kolar, Azadpur, and Nashik mandis.',
   },
   {
     id: 'onion',
     name: 'Onion',
     hindiName: 'प्याज़',
     teluguName: 'ఉల్లిపాయ',
+    regionalNames: {
+      hi: 'प्याज़', kn: 'ಈರುಳ್ಳಿ', ta: 'வெங்காயம்', ml: 'സവാള',
+      te: 'ఉల్లిపాయ', mr: 'कांदा', bn: 'পেঁয়াজ', gu: 'ડુંગળી',
+      pa: 'ਪਿਆਜ਼', or: 'ପିଆଜ', as: 'পিয়াঁইজ'
+    },
     category: 'Vegetables',
     imageUrl: 'https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=800&auto=format&fit=crop&q=80',
     defaultVariety: 'Red Nashik / Garva',
@@ -38,17 +50,367 @@ export const CROPS: Crop[] = [
     name: 'Potato',
     hindiName: 'आलू',
     teluguName: 'బంగాళాదుంప',
+    regionalNames: {
+      hi: 'आलू', kn: 'ಆಲೂಗಡ್ಡೆ', ta: 'உருளைக்கிழங்கு', ml: 'ഉരുളക്കിഴങ്ങ്',
+      te: 'బంగాళాదుంప', mr: 'बटाटा', bn: 'আলু', gu: 'બટાકા',
+      pa: 'ਆਲੂ', or: 'ଆଳୁ', as: 'আলু'
+    },
     category: 'Vegetables',
     imageUrl: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=800&auto=format&fit=crop&q=80',
     defaultVariety: 'Jyoti / Pukhraj / Chipsona',
     season: 'Rabi',
-    description: 'Major tuber crop grown in UP, West Bengal, and Punjab. Significant cold storage arrivals drive post-harvest rates.',
+    description: 'Major tuber crop grown across UP, West Bengal, and Punjab. Significant cold storage arrivals drive post-harvest rates.',
   },
+  {
+    id: 'carrot',
+    name: 'Carrot',
+    hindiName: 'गाजर',
+    teluguName: 'క్యారెట్',
+    regionalNames: {
+      hi: 'गाजर', kn: 'ಕ್ಯಾರೆಟ್', ta: 'கேரட்', ml: 'കാരറ്റ്',
+      te: 'క్యారెట్', mr: 'गाजर', bn: 'গাজর', gu: 'ગાજર',
+      pa: 'ਗਾਜਰ', or: 'ଗାଜର', as: 'গাজৰ'
+    },
+    category: 'Vegetables',
+    imageUrl: 'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'Pusa Kesar / Orange Hybrid',
+    season: 'Rabi',
+    description: 'Nutritious root crop harvested during winter and spring seasons.',
+  },
+  {
+    id: 'cabbage',
+    name: 'Cabbage',
+    hindiName: 'पत्तागोभी',
+    teluguName: 'క్యాబేజీ',
+    regionalNames: {
+      hi: 'पत्तागोभी', kn: 'ಎಲೆಕೋಸು', ta: 'முட்டைக்கோஸ்', ml: 'കാബേജ്',
+      te: 'క్యాబేజీ', mr: 'कोबी', bn: 'বাঁধাকপি', gu: 'કોબીજ',
+      pa: 'ਬੰਦਗੋਭੀ', or: 'ବନ୍ଧାକୋବି', as: 'বন্ধাকবি'
+    },
+    category: 'Vegetables',
+    imageUrl: 'https://images.unsplash.com/photo-1594282486552-05b4d80fbb9f?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'Golden Acre / Green Hybrid',
+    season: 'Rabi',
+    description: 'Widely cultivated leafy vegetable with steady year-round supply.',
+  },
+  {
+    id: 'cauliflower',
+    name: 'Cauliflower',
+    hindiName: 'फूलगोभी',
+    teluguName: 'కాలీఫ్లవర్',
+    regionalNames: {
+      hi: 'फूलगोभी', kn: 'ಹೂಕೋಸು', ta: 'காலிஃபிளவர்', ml: 'കോളിഫ്ലവർ',
+      te: 'కాలీఫ్లవర్', mr: 'फ्लॉवर', bn: 'ফুলকপি', gu: 'ફૂલકોબી',
+      pa: 'ਫੁੱਲਗੋਭੀ', or: 'ଫୁଲକୋବି', as: 'ফুলকবি'
+    },
+    category: 'Vegetables',
+    imageUrl: 'https://images.unsplash.com/photo-1568584711075-3d021a7c3ca3?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'Snowball / Early Kunwari',
+    season: 'Rabi',
+    description: 'Cool-season brassica vegetable with high demand across northern and southern markets.',
+  },
+  {
+    id: 'brinjal',
+    name: 'Brinjal (Eggplant)',
+    hindiName: 'बैंगन',
+    teluguName: 'వంకాయ',
+    regionalNames: {
+      hi: 'बैंगन', kn: 'ಬದನೆಕಾಯಿ', ta: 'கத்தரிக்காய்', ml: 'വഴുതനങ്ങ',
+      te: 'వంకాయ', mr: 'वांगी', bn: 'বেগুন', gu: 'રીંગણ',
+      pa: 'ਬੈਂਗਣ', or: 'ବାଇଗଣ', as: 'বেঙেনা'
+    },
+    category: 'Vegetables',
+    imageUrl: 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'Round Purple / Green Long',
+    season: 'All Year',
+    description: 'Popular vegetable with regional varietal preferences.',
+  },
+  {
+    id: 'cucumber',
+    name: 'Cucumber',
+    hindiName: 'खीरा',
+    teluguName: 'దోసకాయ',
+    regionalNames: {
+      hi: 'खीरा', kn: 'ಸೌತೆಕಾಯಿ', ta: 'வெள்ளரிக்காய்', ml: 'വെള്ളരിക്ക',
+      te: 'దోసకాయ', mr: 'काकडी', bn: 'শসা', gu: 'કાકડી',
+      pa: 'ਖੀਰਾ', or: 'କାକୁଡି', as: 'তিয়ঁহ'
+    },
+    category: 'Vegetables',
+    imageUrl: 'https://images.unsplash.com/photo-1449300079323-02e209d9d3a6?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'Green Salad / Desi White',
+    season: 'Zaid',
+    description: 'Hydrating summer cucurbit crop with quick harvest turnover.',
+  },
+  {
+    id: 'okra',
+    name: 'Okra (Lady Finger)',
+    hindiName: 'भिंडी',
+    teluguName: 'బెండకాయ',
+    regionalNames: {
+      hi: 'भिंडी', kn: 'ಬೆಂಡೆಕಾಯಿ', ta: 'வெண்டைக்காய்', ml: 'വെണ്ടയ്ക്ക',
+      te: 'బెండకాయ', mr: 'भेंडी', bn: 'ঢ্যাঁড়শ', gu: 'ભીંડા',
+      pa: 'ਭਿੰਡੀ', or: 'ଭେଣ୍ଡି', as: 'ভেন্দি'
+    },
+    category: 'Vegetables',
+    imageUrl: 'https://images.unsplash.com/photo-1425543103986-22abb7d7e8d2?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'Pusa Sawani / F1 Hybrid',
+    season: 'Kharif',
+    description: 'Warm-season pod vegetable cultivated in all major agro-climatic zones.',
+  },
+  {
+    id: 'green-chilli',
+    name: 'Green Chilli',
+    hindiName: 'हरी मिर्च',
+    teluguName: 'పచ్చి మిరపకాయ',
+    regionalNames: {
+      hi: 'हरी मिर्च', kn: 'ಹಸಿ ಮೆಣಸಿನಕಾಯಿ', ta: 'பச்சை மிளகாய்', ml: 'പച്ചമുളക്',
+      te: 'పచ్చి మిరపకాయ', mr: 'हिरवी मिरची', bn: 'কাঁচা লঙ্কা', gu: 'લીલા મરચાં',
+      pa: 'ਹਰੀ ਮਿਰਚ', or: 'କଞ୍ଚା ଲଙ୍କା', as: 'কেঁচা জলকীয়া'
+    },
+    category: 'Vegetables',
+    imageUrl: 'https://images.unsplash.com/photo-1596797038530-2c107229654b?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'G-4 / Jwala',
+    season: 'All Year',
+    description: 'High-pungency vegetable staple with rapid mandi rotation.',
+  },
+  {
+    id: 'capsicum',
+    name: 'Capsicum (Bell Pepper)',
+    hindiName: 'शिमला मिर्च',
+    teluguName: 'బెంగళూరు మిరప',
+    regionalNames: {
+      hi: 'शिमला मिर्च', kn: 'ದೊಡ್ಡ ಮೆಣಸಿನಕಾಯಿ', ta: 'குடைமிளகாய்', ml: 'കാപ്സിക്കം',
+      te: 'బెంగళూరు మిరప', mr: 'ढोबळी मिरची', bn: 'ক্যাপসিকাম', gu: 'કેપ્સીકમ',
+      pa: 'ਸ਼ਿਮਲਾ ਮਿਰਚ', or: 'କ୍ୟାପ୍ସିକମ୍', as: 'কেপচিকাম'
+    },
+    category: 'Vegetables',
+    imageUrl: 'https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'California Wonder / Yellow & Red Polyhouse',
+    season: 'All Year',
+    description: 'High-value polyhouse and open-field vegetable popular in urban centers.',
+  },
+  {
+    id: 'spinach',
+    name: 'Spinach (Palak)',
+    hindiName: 'पालक',
+    teluguName: 'పాలకూర',
+    regionalNames: {
+      hi: 'पालक', kn: 'ಪಾಲಕ್ ಸೊಪ್ಪು', ta: 'பசலைக் கீரை', ml: 'ചീര',
+      te: 'పాలకూర', mr: 'पालक', bn: 'পালং শাক', gu: 'પાલક',
+      pa: 'ਪਾਲਕ', or: 'ପାଳଙ୍ଗ', as: 'পালেং শাক'
+    },
+    category: 'Vegetables',
+    imageUrl: 'https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'All Green / Pusa Jyoti',
+    season: 'All Year',
+    description: 'Nutrient-dense green leafy crop with daily peri-urban wholesale trade.',
+  },
+  {
+    id: 'pumpkin',
+    name: 'Pumpkin',
+    hindiName: 'कद्दू',
+    teluguName: 'గుమ్మడికాయ',
+    regionalNames: {
+      hi: 'कद्दू', kn: 'ಕುಂಬಳಕಾಯಿ', ta: 'பூசணிக்காய்', ml: 'മത്തങ്ങ',
+      te: 'గుమ్మడికాయ', mr: 'भोپळा', bn: 'মিষ্টি কুমড়ো', gu: 'કોળું',
+      pa: 'ਕੱਦੂ', or: 'ବୋଇତି କଖାରୁ', as: 'ৰঙালাউ'
+    },
+    category: 'Vegetables',
+    imageUrl: 'https://images.unsplash.com/photo-1506869640319-fe1a24fd76dc?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'Pusa Vikas / Round Orange',
+    season: 'Kharif',
+    description: 'Long-shelf-life cucurbit crop traded continuously across rural markets.',
+  },
+  {
+    id: 'garlic',
+    name: 'Garlic',
+    hindiName: 'लहसुन',
+    teluguName: 'వెల్లుల్లి',
+    regionalNames: {
+      hi: 'लहसुन', kn: 'ಬೆಳ್ಳುಳ್ಳಿ', ta: 'பூண்டு', ml: 'വെളുത്തുള്ളി',
+      te: 'వెల్లుల్లి', mr: 'लसूण', bn: 'রসুন', gu: 'લસણ',
+      pa: 'ਲਸਣ', or: 'ରସୁଣ', as: 'নহৰু'
+    },
+    category: 'Vegetables',
+    imageUrl: 'https://images.unsplash.com/photo-1540148426945-6cf22a6b2383?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'Yamuna Safed / Desi Bold',
+    season: 'Rabi',
+    description: 'Major bulb vegetable and spice with major trading in Mandsaur and Neemuch.',
+  },
+  {
+    id: 'ginger',
+    name: 'Ginger (Fresh)',
+    hindiName: 'अदरक',
+    teluguName: 'అల్లం',
+    regionalNames: {
+      hi: 'अदरक', kn: 'ಶುಂಠಿ', ta: 'இஞ்சி', ml: 'ഇഞ്ചി',
+      te: 'అల్లం', mr: 'आले', bn: 'আদা', gu: 'આદુ',
+      pa: 'ਅਦਰਕ', or: 'ଅଦା', as: 'আদা'
+    },
+    category: 'Vegetables',
+    imageUrl: 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'Rio-de-Janeiro / Maran',
+    season: 'Kharif',
+    description: 'High-value rhizome crop grown in Kerala, Assam, and Karnataka.',
+  },
+
+  // --- FRUITS ---
+  {
+    id: 'mango',
+    name: 'Mango',
+    hindiName: 'आम',
+    teluguName: 'మామిడి',
+    regionalNames: {
+      hi: 'आम', kn: 'ಮಾವಿನಹಣ್ಣು', ta: 'மாம்பழம்', ml: 'മാങ്ങ',
+      te: 'మామిడి', mr: 'आंबा', bn: 'আম', gu: 'કેરી',
+      pa: 'ਅੰਬ', or: 'ଆମ୍ବ', as: 'আম'
+    },
+    category: 'Fruits',
+    imageUrl: 'https://images.unsplash.com/photo-1553279768-865429fa0078?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'Alphonso / Banganapalli / Dasheri',
+    season: 'Zaid',
+    description: 'King of Fruits. Seasonal summer surges with regional varieties from Ratnagiri, Andhra Pradesh, and Malihabad.',
+  },
+  {
+    id: 'banana',
+    name: 'Banana',
+    hindiName: 'केला',
+    teluguName: 'అరటి',
+    regionalNames: {
+      hi: 'केला', kn: 'ಬಾಳೆಹಣ್ಣು', ta: 'வாழைப்பழம்', ml: 'വാഴപ്പഴം',
+      te: 'అరటి', mr: 'केळी', bn: 'কলা', gu: 'કેળાં',
+      pa: 'ਕੇਲਾ', or: 'କଦଳୀ', as: 'কল'
+    },
+    category: 'Fruits',
+    imageUrl: 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'Grand Naine (G9) / Robusta',
+    season: 'All Year',
+    description: 'Constant year-round fruit. Major production clusters in Jalgaon (Maharashtra) and Theni (Tamil Nadu).',
+  },
+  {
+    id: 'apple',
+    name: 'Apple',
+    hindiName: 'सेब',
+    teluguName: 'యాపిల్',
+    regionalNames: {
+      hi: 'सेब', kn: 'ಸೇಬು', ta: 'ஆப்பிள்', ml: 'ആപ്പിൾ',
+      te: 'యాపిల్', mr: 'सफरचंद', bn: 'আপেল', gu: 'સફરજન',
+      pa: 'ਸੇਬ', or: 'ସେଓ', as: 'আপেল'
+    },
+    category: 'Fruits',
+    imageUrl: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'Royal Delicious / Shimla',
+    season: 'Kharif',
+    description: 'Temperate fruit harvested in Himachal Pradesh and Jammu & Kashmir.',
+  },
+  {
+    id: 'orange',
+    name: 'Orange (Nagpur Santra)',
+    hindiName: 'संतरा',
+    teluguName: 'నారింజ',
+    regionalNames: {
+      hi: 'संतरा', kn: 'ಕಿತ್ತಳೆ', ta: 'ஆரஞ்சு', ml: 'ഓറഞ്ച്',
+      te: 'నారింజ', mr: 'संत्री', bn: 'কমলালেবু', gu: 'સંતરા',
+      pa: 'ਸੰਤਰਾ', or: 'କମଳା', as: 'কমলা'
+    },
+    category: 'Fruits',
+    imageUrl: 'https://images.unsplash.com/photo-1582979512210-99b6a53386f9?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'Nagpur Mandarin / Kinnow',
+    season: 'Rabi',
+    description: 'Famous citrus fruit with extensive auctions in Kalamna Mandi, Nagpur and Punjab.',
+  },
+  {
+    id: 'grapes',
+    name: 'Grapes',
+    hindiName: 'अंगूर',
+    teluguName: 'ద్రాక్ష',
+    regionalNames: {
+      hi: 'अंगूर', kn: 'ದ್ರಾಕ್ಷಿ', ta: 'திராட்சை', ml: 'മുന്തിരി',
+      te: 'ద్రాక్ష', mr: 'द्राक्षे', bn: 'আঙ্গুর', gu: 'દ્રાક્ષ',
+      pa: 'ਅੰਗੂਰ', or: 'ଅଙ୍ଗୁର', as: 'আঙুৰ'
+    },
+    category: 'Fruits',
+    imageUrl: 'https://images.unsplash.com/photo-1596363505729-4190a9506133?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'Thomson Seedless / Sharad',
+    season: 'Rabi',
+    description: 'Nashik and Sangli belt grape orchards serve both domestic mandis and international exports.',
+  },
+  {
+    id: 'watermelon',
+    name: 'Watermelon',
+    hindiName: 'तरबूज',
+    teluguName: 'పుచ్చకాయ',
+    regionalNames: {
+      hi: 'तरबूज', kn: 'ಕಲ್ಲಂಗಡಿ', ta: 'தர்பூசணி', ml: 'തണ്ണിമത്തൻ',
+      te: 'పుచ్చకాయ', mr: 'कलिंगड', bn: 'তরমুজ', gu: 'તરબૂચ',
+      pa: 'ਤਰਬੂਜ਼', or: 'ତରଭୁଜ', as: 'তৰমুজ'
+    },
+    category: 'Fruits',
+    imageUrl: 'https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'Sugar Baby / Dark Knight',
+    season: 'Zaid',
+    description: 'Crucial summer cash fruit with massive seasonal turnover.',
+  },
+  {
+    id: 'papaya',
+    name: 'Papaya',
+    hindiName: 'पपीता',
+    teluguName: 'బొప్పాయి',
+    regionalNames: {
+      hi: 'पपीता', kn: 'ಪಪ್ಪಾಯಿ', ta: 'பப்பாளி', ml: 'പപ്പായ',
+      te: 'బొప్పాయి', mr: 'पपई', bn: 'পেঁপে', gu: 'પપૈયું',
+      pa: 'ਪਪੀਤਾ', or: 'ଅମୃତଭଣ୍ଡା', as: 'অমিতা'
+    },
+    category: 'Fruits',
+    imageUrl: 'https://images.unsplash.com/photo-1617112848923-cc2234396a8d?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'Red Lady 786 / Taiwan',
+    season: 'All Year',
+    description: 'Fast-yielding fruit with steady commercial demand across South India and Maharashtra.',
+  },
+  {
+    id: 'pomegranate',
+    name: 'Pomegranate',
+    hindiName: 'अनार',
+    teluguName: 'దానిమ్మ',
+    regionalNames: {
+      hi: 'अनार', kn: 'ದಾಳಿಂಬೆ', ta: 'மாதுளை', ml: 'മാതളനാരകം',
+      te: 'దానిమ్మ', mr: 'डाळिंब', bn: 'বেদানা', gu: 'દાડમ',
+      pa: 'ਅਨਾਰ', or: 'ଡାଳିମ୍ବ', as: 'ডালিম'
+    },
+    category: 'Fruits',
+    imageUrl: 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'Bhagwa / Arakta',
+    season: 'All Year',
+    description: 'Drought-tolerant high-value fruit. Solapur and Ahmednagar govern national prices.',
+  },
+  {
+    id: 'guava',
+    name: 'Guava',
+    hindiName: 'अमरूद',
+    teluguName: 'జామకాయ',
+    regionalNames: {
+      hi: 'अमरूद', kn: 'ಸೀಬೆಹಣ್ಣು', ta: 'கொய்யா', ml: 'പേരയ്ക്ക',
+      te: 'జామకాయ', mr: 'पेरू', bn: 'পেয়ারা', gu: 'જામફળ',
+      pa: 'ਅਮਰੂਦ', or: 'ପିଜୁଳି', as: 'মধুৰিআম'
+    },
+    category: 'Fruits',
+    imageUrl: 'https://images.unsplash.com/photo-1536511135899-733d9f8c0527?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'Allahabad Safeda / Sardar L-49',
+    season: 'Rabi',
+    description: 'Hardy fruit grown in UP, MP, and Bihar with strong winter demand.',
+  },
+
+  // --- GRAINS & CEREALS ---
   {
     id: 'wheat',
     name: 'Wheat',
     hindiName: 'गेहूं',
     teluguName: 'గోధుమ',
+    regionalNames: {
+      hi: 'गेहूं', kn: 'ಗೋಧಿ', ta: 'கோதுமை', ml: 'ഗോതമ്പ്',
+      te: 'గోధుమ', mr: 'गहू', bn: 'গম', gu: 'ઘઉં',
+      pa: 'ਕਣਕ', or: 'ଗହମ', as: 'ঘেঁহু'
+    },
     category: 'Grains & Cereals',
     imageUrl: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800&auto=format&fit=crop&q=80',
     defaultVariety: 'Sharbati / Lokwan / HD 2967',
@@ -61,6 +423,11 @@ export const CROPS: Crop[] = [
     name: 'Rice (Paddy)',
     hindiName: 'चावल (धान)',
     teluguName: 'వరి (ధాన్యం)',
+    regionalNames: {
+      hi: 'चावल (धान)', kn: 'ಭತ್ತ / ಅಕ್ಕಿ', ta: 'நெல் / அரிசி', ml: 'നെല്ല് / അരി',
+      te: 'వరి (ధాన్యం)', mr: 'भात / तांदूळ', bn: 'ধান / চাল', gu: 'ડાંગર / ચોખા',
+      pa: 'ਝੋਨਾ / ਚੌਲ', or: 'ଧାନ / ଚାଉଳ', as: 'ধান / চাউল'
+    },
     category: 'Grains & Cereals',
     imageUrl: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=800&auto=format&fit=crop&q=80',
     defaultVariety: 'Basmati 1121 / Sona Masoori / IR64',
@@ -69,45 +436,15 @@ export const CROPS: Crop[] = [
     description: 'Staple grain crop. Varietal premiums for Basmati vs coarse paddy lead to wide price ranges in northern vs southern yards.',
   },
   {
-    id: 'cotton',
-    name: 'Cotton',
-    hindiName: 'कपास',
-    teluguName: 'పత్తి',
-    category: 'Commercial Crops',
-    imageUrl: 'https://images.unsplash.com/photo-1606041008023-472dfb5e530f?w=800&auto=format&fit=crop&q=80',
-    defaultVariety: 'BT Cotton / Medium Staple',
-    msp: 7121,
-    season: 'Kharif',
-    description: 'White gold commercial fiber. Traded actively across Gujarat, Telangana, and Maharashtra ginning markets.',
-  },
-  {
-    id: 'soybean',
-    name: 'Soybean',
-    hindiName: 'सोयाबीन',
-    teluguName: 'సోయాబీన్',
-    category: 'Oilseeds',
-    imageUrl: 'https://images.unsplash.com/photo-1599818987134-2e987978280f?w=800&auto=format&fit=crop&q=80',
-    defaultVariety: 'Yellow JS-9560',
-    msp: 4892,
-    season: 'Kharif',
-    description: 'Crucial protein and edible oil source. Major markets located in Indore, Ujjain, and Latur.',
-  },
-  {
-    id: 'chilli',
-    name: 'Red Chilli (Dry)',
-    hindiName: 'लाल मिर्च',
-    teluguName: 'ఎండిన మిరప',
-    category: 'Spices',
-    imageUrl: 'https://images.unsplash.com/photo-1588252303782-cb80119abd6d?w=800&auto=format&fit=crop&q=80',
-    defaultVariety: 'Teja / 334 / Byadgi',
-    season: 'Rabi',
-    description: 'High-value export spice. Guntur Mirchi Yard in Andhra Pradesh governs global and national wholesale pricing.',
-  },
-  {
     id: 'maize',
     name: 'Maize (Corn)',
     hindiName: 'मक्का',
     teluguName: 'మొక్కజొన్న',
+    regionalNames: {
+      hi: 'मक्का', kn: 'ಮೆಕ್ಕೆಜೋಳ', ta: 'மக்காச்சோளம்', ml: 'മക്കച്ചോളം',
+      te: 'మొక్కజొన్న', mr: 'मका', bn: 'ভুট্টা', gu: 'મકાઈ',
+      pa: 'ਮੱਕੀ', or: 'ମକା', as: 'গোমধান'
+    },
     category: 'Grains & Cereals',
     imageUrl: 'https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=800&auto=format&fit=crop&q=80',
     defaultVariety: 'Yellow Feed / Sweet Corn',
@@ -116,44 +453,68 @@ export const CROPS: Crop[] = [
     description: 'Key feed and starch industrial raw material. Heavy trading across Bihar, Karnataka, and Telangana.',
   },
   {
-    id: 'mango',
-    name: 'Mango',
-    hindiName: 'आम',
-    teluguName: 'మామిడి',
-    category: 'Fruits',
-    imageUrl: 'https://images.unsplash.com/photo-1553279768-865429fa0078?w=800&auto=format&fit=crop&q=80',
-    defaultVariety: 'Alphonso / Banganapalli / Dasheri',
-    season: 'Zaid',
-    description: 'King of Fruits. Seasonal summer surges with regional varieties from Ratnagiri, Andhra Pradesh, and Malihabad.',
+    id: 'bajra',
+    name: 'Bajra (Pearl Millet)',
+    hindiName: 'बाजरा',
+    teluguName: 'సజ్జలు',
+    regionalNames: {
+      hi: 'बाजरा', kn: 'ಸಜ್ಜೆ', ta: 'கம்பு', ml: 'കമ്പം',
+      te: 'సజ్జలు', mr: 'बाजरी', bn: 'বাজরা', gu: 'બાજરી',
+      pa: 'ਬਾਜਰਾ', or: 'ବାଜରା', as: 'বাজৰা'
+    },
+    category: 'Grains & Cereals',
+    imageUrl: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'Desi Hybrid / HHb 67',
+    msp: 2500,
+    season: 'Kharif',
+    description: 'Nutritious drought-hardy millet heavily cultivated in Rajasthan, Haryana, and Gujarat.',
   },
   {
-    id: 'banana',
-    name: 'Banana',
-    hindiName: 'केला',
-    teluguName: 'అరటి',
-    category: 'Fruits',
-    imageUrl: 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=800&auto=format&fit=crop&q=80',
-    defaultVariety: 'Grand Naine (G9) / Robusta',
-    season: 'All Year',
-    description: 'Constant year-round fruit. Major production clusters in Jalgaon (Maharashtra) and Theni (Tamil Nadu).',
+    id: 'jowar',
+    name: 'Jowar (Sorghum)',
+    hindiName: 'ज्वार',
+    teluguName: 'జొన్నలు',
+    regionalNames: {
+      hi: 'ज्वार', kn: 'ಜೋಳ', ta: 'சோளம்', ml: 'ചോളം',
+      te: 'జొన్నలు', mr: 'ज्वारी', bn: 'জোয়ার', gu: 'જુવાર',
+      pa: 'ਜਵਾਰ', or: 'ଜୁଆର', as: 'জোৱাৰ'
+    },
+    category: 'Grains & Cereals',
+    imageUrl: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'Maldandi / Hybrid',
+    msp: 3180,
+    season: 'Kharif',
+    description: 'Major coarse cereal cultivated in Maharashtra, Karnataka, and Telangana.',
   },
   {
-    id: 'mustard',
-    name: 'Mustard Seeds',
-    hindiName: 'सरसों',
-    teluguName: 'ఆవాలు',
-    category: 'Oilseeds',
-    imageUrl: 'https://images.unsplash.com/photo-1508873696983-2df5293cb32f?w=800&auto=format&fit=crop&q=80',
-    defaultVariety: 'Black Mustard / Pusa Jai Kisan',
-    msp: 5650,
-    season: 'Rabi',
-    description: 'Primary winter oilseed crop in northern India. Heavily traded in Rajasthan (Bharatpur, Kota) and Haryana.',
+    id: 'ragi',
+    name: 'Ragi (Finger Millet)',
+    hindiName: 'रागी (मडुआ)',
+    teluguName: 'రాగులు',
+    regionalNames: {
+      hi: 'रागी (मडुआ)', kn: 'ರಾಗಿ', ta: 'கேழ்வரகு', ml: 'കൂവരക്',
+      te: 'రాగులు', mr: 'नाचणी', bn: 'রাগী', gu: 'રાગી',
+      pa: 'ਰਾਗੀ', or: 'ମାଣ୍ଡିଆ', as: 'মাৰুৱা'
+    },
+    category: 'Grains & Cereals',
+    imageUrl: 'https://images.unsplash.com/photo-1515543237350-b3eea1ec8082?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'GPU 28 / Indaf 5',
+    msp: 3846,
+    season: 'Kharif',
+    description: 'Super-grain millet with high calcium content. Karnataka is the largest producer.',
   },
+
+  // --- PULSES ---
   {
     id: 'chana',
-    name: 'Gram / Chana',
+    name: 'Gram / Chana (Chickpeas)',
     hindiName: 'चना',
     teluguName: 'శనగలు',
+    regionalNames: {
+      hi: 'चना', kn: 'ಕಡಲೆ', ta: 'கொண்டைக்கடலை', ml: 'കടല',
+      te: 'శనగలు', mr: 'हरभरा', bn: 'ছোলা', gu: 'ચણા',
+      pa: 'ਛੋਲੇ', or: 'ଚଣା', as: 'বুট'
+    },
     category: 'Pulses',
     imageUrl: 'https://images.unsplash.com/photo-1515543237350-b3eea1ec8082?w=800&auto=format&fit=crop&q=80',
     defaultVariety: 'Desi Chana / Kabuli',
@@ -162,10 +523,84 @@ export const CROPS: Crop[] = [
     description: 'Largest pulse crop consumed in India. Key yards include Indore, Neemuch, and Bikaner.',
   },
   {
+    id: 'tur-dal',
+    name: 'Tur (Arhar / Toor Dal)',
+    hindiName: 'अरहर (तूर)',
+    teluguName: 'కందులు',
+    regionalNames: {
+      hi: 'अरहर (तूर)', kn: 'ತೊಗರಿ', ta: 'துவரம் பருப்பு', ml: 'തുവരപ്പരിപ്പ്',
+      te: 'కందులు', mr: 'तूर', bn: 'অড়হর ডাল', gu: 'તુવેર',
+      pa: 'ਅਰਹਰ', or: 'ହରଡ ଡାଲି', as: 'অৰহৰ'
+    },
+    category: 'Pulses',
+    imageUrl: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'Red Tur / White Tur',
+    msp: 7550,
+    season: 'Kharif',
+    description: 'Major protein source for Indian diets. Kalaburagi (Karnataka) and Akola (Maharashtra) are benchmark centers.',
+  },
+  {
+    id: 'moong',
+    name: 'Moong Dal (Green Gram)',
+    hindiName: 'मूंग',
+    teluguName: 'పెసలు',
+    regionalNames: {
+      hi: 'मूंग', kn: 'ಹೆಸರು ಕಾಳು', ta: 'பாசிப்பயறு', ml: 'ചെറുപയർ',
+      te: 'పెసలు', mr: 'मूग', bn: 'মুগ ডাল', gu: 'મગ',
+      pa: 'ਮੂੰਗੀ', or: 'ମୁଗ', as: 'মগু মাহ'
+    },
+    category: 'Pulses',
+    imageUrl: 'https://images.unsplash.com/photo-1515543237350-b3eea1ec8082?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'Shining Green / Samrat',
+    msp: 8558,
+    season: 'Kharif',
+    description: 'High-protein pulse harvested in Rajasthan, Maharashtra, and Karnataka.',
+  },
+  {
+    id: 'urad',
+    name: 'Urad (Black Gram)',
+    hindiName: 'उड़द',
+    teluguName: 'మినుములు',
+    regionalNames: {
+      hi: 'उड़द', kn: 'ಉದ್ದು', ta: 'உளுந்து', ml: 'ഉഴുന്ന്',
+      te: 'మినుములు', mr: 'उडीद', bn: 'মাষকলাই ডাল', gu: 'અડદ',
+      pa: 'ਮਾਂਹ', or: 'ବିରି', as: 'মাটি মাহ'
+    },
+    category: 'Pulses',
+    imageUrl: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'Black Bold / T-9',
+    msp: 6950,
+    season: 'Kharif',
+    description: 'Essential pulse for dal and culinary preparations across all Indian states.',
+  },
+
+  // --- SPICES ---
+  {
+    id: 'chilli',
+    name: 'Red Chilli (Dry)',
+    hindiName: 'लाल मिर्च',
+    teluguName: 'ఎండిన మిరప',
+    regionalNames: {
+      hi: 'लाल मिर्च', kn: 'ಒಣ ಮೆಣಸಿನಕಾಯಿ', ta: 'காய்ந்த மிளகாய்', ml: 'വറ്റൽമുളക്',
+      te: 'ఎండిన మిరప', mr: 'सुकलेली मिरची', bn: 'শুকনো লঙ্কা', gu: 'સૂકાં મરચાં',
+      pa: 'ਸੁੱਕੀ ਲਾਲ ਮਿਰਚ', or: 'ଶୁଖିଲା ଲଙ୍କା', as: 'শুকান জলকীয়া'
+    },
+    category: 'Spices',
+    imageUrl: 'https://images.unsplash.com/photo-1588252303782-cb80119abd6d?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'Teja / 334 / Byadgi',
+    season: 'Rabi',
+    description: 'High-value export spice. Guntur Mirchi Yard in Andhra Pradesh governs global and national wholesale pricing.',
+  },
+  {
     id: 'turmeric',
     name: 'Turmeric',
     hindiName: 'हल्दी',
     teluguName: 'పసుపు',
+    regionalNames: {
+      hi: 'हल्दी', kn: 'ಅರಿಶಿನ', ta: 'மஞ்சள்', ml: 'മഞ്ഞൾ',
+      te: 'పసుపు', mr: 'हळद', bn: 'হলুদ', gu: 'હળદર',
+      pa: 'ਹਲਦੀ', or: 'ହଳଦୀ', as: 'হালধি'
+    },
     category: 'Spices',
     imageUrl: 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=800&auto=format&fit=crop&q=80',
     defaultVariety: 'Salem / Nizamabad Finger',
@@ -173,27 +608,273 @@ export const CROPS: Crop[] = [
     description: 'Golden spice with therapeutic and culinary demand. Nizamabad, Sangli, and Erode are core trading hubs.',
   },
   {
-    id: 'tur-dal',
-    name: 'Tur (Arhar / Pigeon Pea)',
-    hindiName: 'अरहर (तूर)',
-    teluguName: 'కందులు',
-    category: 'Pulses',
-    imageUrl: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=800&auto=format&fit=crop&q=80',
-    defaultVariety: 'Red Tur / White Tur',
-    msp: 7550,
-    season: 'Kharif',
-    description: 'Major protein source for Indian diets. Kalaburagi (Gulbarga, Karnataka) and Akola (Maharashtra) are key centers.',
+    id: 'cumin',
+    name: 'Cumin (Jeera)',
+    hindiName: 'जीरा',
+    teluguName: 'జీలకర్ర',
+    regionalNames: {
+      hi: 'जीरा', kn: 'ಜೀರಿಗೆ', ta: 'சீரகம்', ml: 'ജീരകം',
+      te: 'జీలకర్ర', mr: 'जिरे', bn: 'জিরে', gu: 'જીરું',
+      pa: 'ਜੀਰਾ', or: 'ଜୀରା', as: 'জীৰা'
+    },
+    category: 'Spices',
+    imageUrl: 'https://images.unsplash.com/photo-1508873696983-2df5293cb32f?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'Gujarat Cumin-4 / Desi',
+    season: 'Rabi',
+    description: 'Unjha Mandi in Gujarat is the premier international marketplace for cumin seed trade.',
   },
   {
-    id: 'green-chilli',
-    name: 'Green Chilli',
-    hindiName: 'हरी मिर्च',
-    teluguName: 'పచ్చి మిరపకాయ',
-    category: 'Vegetables',
-    imageUrl: 'https://images.unsplash.com/photo-1596797038530-2c107229654b?w=800&auto=format&fit=crop&q=80',
-    defaultVariety: 'G-4 / Jwala',
+    id: 'black-pepper',
+    name: 'Black Pepper',
+    hindiName: 'काली मिर्च',
+    teluguName: 'మిరియాలు',
+    regionalNames: {
+      hi: 'काली मिर्च', kn: 'ಕಾಳು ಮೆಣಸು', ta: 'மிளகு', ml: 'കുരുമുളക്',
+      te: 'మిరియాలు', mr: 'काळी मिरी', bn: 'গোলমরিচ', gu: 'કાળા મરી',
+      pa: 'ਕਾਲੀ ਮਿਰਚ', or: 'ଗୋଲମରିଚ', as: 'জালুক'
+    },
+    category: 'Spices',
+    imageUrl: 'https://images.unsplash.com/photo-1508873696983-2df5293cb32f?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'Malabar Garbled',
+    season: 'Rabi',
+    description: 'King of Spices. Cultivated extensively along the Western Ghats of Kerala and Karnataka.',
+  },
+  {
+    id: 'cardamom',
+    name: 'Cardamom (Elaichi)',
+    hindiName: 'इलायची',
+    teluguName: 'యాలకులు',
+    regionalNames: {
+      hi: 'इलायची', kn: 'ಏಲಕ್ಕಿ', ta: 'ஏலக்காய்', ml: 'ഏലയ്ക്ക',
+      te: 'యాలకులు', mr: 'वेलची', bn: 'এলাচ', gu: 'એલચી',
+      pa: 'ਇਲਾਇਚੀ', or: 'ଗୁଜୁରାତି', as: 'ইলাচি'
+    },
+    category: 'Spices',
+    imageUrl: 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'Small Green Bold 8mm',
+    season: 'Kharif',
+    description: 'Queen of Spices. Spices Board e-auctions in Idukki (Kerala) establish benchmark prices.',
+  },
+
+  // --- OILSEEDS ---
+  {
+    id: 'soybean',
+    name: 'Soybean',
+    hindiName: 'सोयाबीन',
+    teluguName: 'సోయాబీన్',
+    regionalNames: {
+      hi: 'सोयाबीन', kn: 'ಸೋಯಾಬೀನ್', ta: 'சோயாபீன்', ml: 'സോയാബീൻ',
+      te: 'సోయాబీన్', mr: 'सोयाबीन', bn: 'সয়াবিন', gu: 'સોયાબીન',
+      pa: 'ਸੋਇਆਬੀਨ', or: 'ସୋୟାବିନ୍', as: 'ছয়াবিন'
+    },
+    category: 'Oilseeds',
+    imageUrl: 'https://images.unsplash.com/photo-1599818987134-2e987978280f?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'Yellow JS-9560',
+    msp: 4892,
+    season: 'Kharif',
+    description: 'Crucial protein and edible oil source. Major markets located in Indore, Ujjain, and Latur.',
+  },
+  {
+    id: 'mustard',
+    name: 'Mustard Seeds',
+    hindiName: 'सरसों',
+    teluguName: 'ఆవాలు',
+    regionalNames: {
+      hi: 'सरसों', kn: 'ಸಾಸಿವೆ', ta: 'கடுகு', ml: 'കടുക്',
+      te: 'ఆవాలు', mr: 'मोहरी', bn: 'সরিষা', gu: 'રાઈ',
+      pa: 'ਸਰ੍ਹੋਂ', or: 'ସୋରିଷ', as: 'সৰিয়হ'
+    },
+    category: 'Oilseeds',
+    imageUrl: 'https://images.unsplash.com/photo-1508873696983-2df5293cb32f?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'Black Mustard / Pusa Jai Kisan',
+    msp: 5650,
+    season: 'Rabi',
+    description: 'Primary winter oilseed crop in northern India. Heavily traded in Rajasthan (Kota) and Haryana.',
+  },
+  {
+    id: 'groundnut',
+    name: 'Groundnut (Peanut)',
+    hindiName: 'मूंगफली',
+    teluguName: 'వేరుశెనగ',
+    regionalNames: {
+      hi: 'मूंगफली', kn: 'ಕಡಲೆಕಾಯಿ', ta: 'வேர்க்கடலை', ml: 'നിലക്കടല',
+      te: 'వేరుశెనగ', mr: 'भुईमूग', bn: 'চিনাবাদাম', gu: 'મગફળી',
+      pa: 'ਮੂੰਗਫਲੀ', or: 'ଚିନାବାଦାମ', as: 'বাদাম'
+    },
+    category: 'Oilseeds',
+    imageUrl: 'https://images.unsplash.com/photo-1515543237350-b3eea1ec8082?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'GG-20 / Spanish Peanut',
+    msp: 6377,
+    season: 'Kharif',
+    description: 'Major edible oil and confectionery crop centered in Rajkot, Gondal, and Anantapur.',
+  },
+  {
+    id: 'sunflower',
+    name: 'Sunflower Seed',
+    hindiName: 'सूरजमुखी',
+    teluguName: 'పొద్దుతిరుగుడు',
+    regionalNames: {
+      hi: 'सूरजमुखी', kn: 'ಸೂರ್ಯಕಾಂತಿ', ta: 'சூரியகாந்தி', ml: 'സൂര്യകാന്തി',
+      te: 'పొద్దుతిరుగుడు', mr: 'सूर्यफूल', bn: 'সূর্যমুখী', gu: 'સૂર્યમુખી',
+      pa: 'ਸੂਰਜਮੁਖੀ', or: 'ସୂର୍ଯ୍ୟମୁଖୀ', as: 'সূৰ্যমুখী'
+    },
+    category: 'Oilseeds',
+    imageUrl: 'https://images.unsplash.com/photo-1597848212624-a19eb35e2651?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'KBSH-44 / Hybrid Bold',
+    msp: 6760,
+    season: 'Rabi',
+    description: 'High-quality edible oilseed crop grown in Karnataka, Andhra Pradesh, and Maharashtra.',
+  },
+  {
+    id: 'sesame',
+    name: 'Sesame (Til)',
+    hindiName: 'तिल',
+    teluguName: 'నువ్వులు',
+    regionalNames: {
+      hi: 'तिल', kn: 'ಎಳ್ಳು', ta: 'எள்', ml: 'എള്ള്',
+      te: 'నువ్వులు', mr: 'तीळ', bn: 'তিল', gu: 'તલ',
+      pa: 'ਤਿਲ', or: 'ରାଶି', as: 'তিল'
+    },
+    category: 'Oilseeds',
+    imageUrl: 'https://images.unsplash.com/photo-1508873696983-2df5293cb32f?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'White Bold / Black Til',
+    msp: 8635,
+    season: 'Kharif',
+    description: 'Ancient premium oilseed with significant export value to East Asia and Europe.',
+  },
+
+  // --- COMMERCIAL CROPS ---
+  {
+    id: 'cotton',
+    name: 'Cotton',
+    hindiName: 'कपास',
+    teluguName: 'పత్తి',
+    regionalNames: {
+      hi: 'कपास', kn: 'ಹತ್ತಿ', ta: 'பருத்தி', ml: 'പരുത്തി',
+      te: 'పత్తి', mr: 'कापूस', bn: 'তুলা', gu: 'કપાસ',
+      pa: 'ਕਪਾਹ', or: 'କପା', as: 'কপাহ'
+    },
+    category: 'Commercial Crops',
+    imageUrl: 'https://images.unsplash.com/photo-1606041008023-472dfb5e530f?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'BT Cotton / Shankar-6',
+    msp: 7121,
+    season: 'Kharif',
+    description: 'White gold commercial fiber. Traded actively across Gujarat, Telangana, and Maharashtra ginning markets.',
+  },
+  {
+    id: 'sugarcane',
+    name: 'Sugarcane',
+    hindiName: 'गन्ना',
+    teluguName: 'చెరకు',
+    regionalNames: {
+      hi: 'गन्ना', kn: 'ಕಬ್ಬು', ta: 'கரும்பு', ml: 'കരിമ്പ്',
+      te: 'చెరకు', mr: 'ऊस', bn: 'আখ', gu: 'શેરડી',
+      pa: 'ਗੰਨਾ', or: 'ଆଖୁ', as: 'কুঁহিয়াৰ'
+    },
+    category: 'Commercial Crops',
+    imageUrl: 'https://images.unsplash.com/photo-1589134769064-282662c1590e?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'Co-0238 / Co-86032',
     season: 'All Year',
-    description: 'Perishable pungent spice vegetable. Fast turnover across local peri-urban wholesale mandis.',
+    description: 'Leading cash crop feeding sugar mills with statutory Fair and Remunerative Price (FRP).',
+  },
+  {
+    id: 'jute',
+    name: 'Jute',
+    hindiName: 'जूट (पटसन)',
+    teluguName: 'జనపనార',
+    regionalNames: {
+      hi: 'जूट (पटसन)', kn: 'ಸೆಣಬು', ta: 'சணல்', ml: 'ചണം',
+      te: 'జనపనార', mr: 'ताग', bn: 'পাট', gu: 'શણ',
+      pa: 'ਪਟਸਨ', or: 'ଝୋଟ', as: 'মৰাপাট'
+    },
+    category: 'Commercial Crops',
+    imageUrl: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'TD-5 / White Jute',
+    msp: 5050,
+    season: 'Kharif',
+    description: 'Golden fiber of West Bengal, Assam, and Bihar used for eco-friendly packaging and textiles.',
+  },
+  {
+    id: 'tobacco',
+    name: 'Tobacco',
+    hindiName: 'तंबाकू',
+    teluguName: 'పొగాకు',
+    regionalNames: {
+      hi: 'तंबाकू', kn: 'ತಂಬಾಕು', ta: 'புகையிலை', ml: 'പുകയില',
+      te: 'పొగాకు', mr: 'तंबाखू', bn: 'তামাক', gu: 'તમાકુ',
+      pa: 'ਤੰਬਾਕੂ', or: 'ଧୂଆଁପତ୍ର', as: 'ধপাত'
+    },
+    category: 'Commercial Crops',
+    imageUrl: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'FCV (Virginia) / Bidi Tobacco',
+    season: 'Rabi',
+    description: 'Auctioned under Tobacco Board oversight in Guntur and Rajahmundry platforms.',
+  },
+
+  // --- PLANTATION CROPS ---
+  {
+    id: 'coffee',
+    name: 'Coffee',
+    hindiName: 'कॉफी',
+    teluguName: 'కాఫీ',
+    regionalNames: {
+      hi: 'कॉफी', kn: 'ಕಾಫಿ', ta: 'காபி', ml: 'കാപ്പി',
+      te: 'కాఫీ', mr: 'कॉफी', bn: 'কফি', gu: 'કોફી',
+      pa: 'ਕੌਫੀ', or: 'କଫି', as: 'কফি'
+    },
+    category: 'Plantation Crops',
+    imageUrl: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'Arabica Plantation A / Robusta Cherry',
+    season: 'All Year',
+    description: 'Major shade-grown beverage plantation crop in Chikmagalur, Coorg, and Wayanad.',
+  },
+  {
+    id: 'tea',
+    name: 'Tea',
+    hindiName: 'चाय',
+    teluguName: 'తేయాకు',
+    regionalNames: {
+      hi: 'चाय', kn: 'ಚಹಾ', ta: 'தேயிலை', ml: 'തേയില',
+      te: 'తేయాకు', mr: 'चहा', bn: 'চা', gu: 'ચા',
+      pa: 'ਚਾਹ', or: 'ଚାହା', as: 'চাহ'
+    },
+    category: 'Plantation Crops',
+    imageUrl: 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'Assam CTC / Darjeeling Orthodox',
+    season: 'All Year',
+    description: 'Globally celebrated beverage crop auctioned in Guwahati, Kolkata, and Siliguri centers.',
+  },
+  {
+    id: 'coconut',
+    name: 'Coconut',
+    hindiName: 'नारियल',
+    teluguName: 'కొబ్బరికాయ',
+    regionalNames: {
+      hi: 'नारियल', kn: 'ತೆಂಗಿನಕಾಯಿ', ta: 'தேங்காய்', ml: 'തേങ്ങ',
+      te: 'కొబ్బరికాయ', mr: 'नारळ', bn: 'নারকেল', gu: 'નાળિયેર',
+      pa: 'ਨਾਰੀਅਲ', or: 'ନଡ଼ିଆ', as: 'নাৰিকল'
+    },
+    category: 'Plantation Crops',
+    imageUrl: 'https://images.unsplash.com/photo-1550989460-0adf9ea622e2?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'West Coast Tall / TxD Hybrid',
+    season: 'All Year',
+    description: 'Versatile tree crop yielding tender nut, copra, and coir across coastal India.',
+  },
+  {
+    id: 'arecanut',
+    name: 'Arecanut (Betel Nut / Supari)',
+    hindiName: 'सुपारी',
+    teluguName: 'పోకచెక్క',
+    regionalNames: {
+      hi: 'सुपारी', kn: 'ಅಡಿಕೆ', ta: 'பாக்கு', ml: 'അടയ്ക്ക',
+      te: 'పోకచెక్క', mr: 'सुपारी', bn: 'সুপারি', gu: 'સોપારી',
+      pa: 'ਸੁਪਾਰੀ', or: 'ଗୁଆ', as: 'তামোল'
+    },
+    category: 'Plantation Crops',
+    imageUrl: 'https://images.unsplash.com/photo-1508873696983-2df5293cb32f?w=800&auto=format&fit=crop&q=80',
+    defaultVariety: 'Mangalore Chali / Rashi',
+    season: 'All Year',
+    description: 'High-value commercial nut traded heavily in CAMPCO yards in Mangalore and Shimoga.',
   },
 ];
 
@@ -207,7 +888,7 @@ export const MANDIS: Mandi[] = [
     address: 'Azadpur Commercial Complex, GT Karnal Road, Delhi 110033',
     phone: '011-27691234',
     dailyArrivalTons: 14200,
-    featuredCrops: ['Tomato', 'Onion', 'Potato', 'Mango', 'Banana'],
+    featuredCrops: ['Tomato', 'Onion', 'Potato', 'Mango', 'Banana', 'Apple', 'Carrot'],
   },
   {
     id: 'mandi-lasalgaon',
@@ -218,7 +899,7 @@ export const MANDIS: Mandi[] = [
     address: 'APMC Market Yard, Lasalgaon, Niphad, Nashik 422306',
     phone: '02550-266222',
     dailyArrivalTons: 8500,
-    featuredCrops: ['Onion', 'Tomato', 'Soybean', 'Maize'],
+    featuredCrops: ['Onion', 'Tomato', 'Soybean', 'Maize', 'Grapes'],
   },
   {
     id: 'mandi-kolar',
@@ -229,7 +910,7 @@ export const MANDIS: Mandi[] = [
     address: 'APMC Yard, Gulpet, Kolar, Karnataka 563101',
     phone: '08152-222345',
     dailyArrivalTons: 6800,
-    featuredCrops: ['Tomato', 'Mango', 'Green Chilli', 'Potato'],
+    featuredCrops: ['Tomato', 'Mango', 'Green Chilli', 'Potato', 'Brinjal'],
   },
   {
     id: 'mandi-guntur',
@@ -240,7 +921,7 @@ export const MANDIS: Mandi[] = [
     address: 'Chilli Market Yard, Grand Trunk Rd, Guntur 522001',
     phone: '0863-2234567',
     dailyArrivalTons: 9100,
-    featuredCrops: ['Red Chilli (Dry)', 'Cotton', 'Turmeric', 'Rice (Paddy)'],
+    featuredCrops: ['Red Chilli (Dry)', 'Cotton', 'Turmeric', 'Rice (Paddy)', 'Tobacco'],
   },
   {
     id: 'mandi-khanna',
@@ -251,7 +932,7 @@ export const MANDIS: Mandi[] = [
     address: 'Asia Grain Market, GT Road, Khanna, Ludhiana 141401',
     phone: '01628-223344',
     dailyArrivalTons: 16500,
-    featuredCrops: ['Wheat', 'Rice (Paddy)', 'Maize'],
+    featuredCrops: ['Wheat', 'Rice (Paddy)', 'Maize', 'Bajra'],
   },
   {
     id: 'mandi-neemuch',
@@ -262,7 +943,7 @@ export const MANDIS: Mandi[] = [
     address: 'Mandi Samiti Campus, Neemuch, MP 458441',
     phone: '07423-228765',
     dailyArrivalTons: 5200,
-    featuredCrops: ['Soybean', 'Wheat', 'Gram / Chana', 'Mustard Seeds'],
+    featuredCrops: ['Soybean', 'Wheat', 'Gram / Chana', 'Mustard Seeds', 'Garlic'],
   },
   {
     id: 'mandi-rajkot',
@@ -273,7 +954,7 @@ export const MANDIS: Mandi[] = [
     address: 'Bedi Marketing Yard, Morbi Road, Rajkot 360003',
     phone: '0281-2703401',
     dailyArrivalTons: 7400,
-    featuredCrops: ['Cotton', 'Groundnut', 'Onion', 'Wheat'],
+    featuredCrops: ['Cotton', 'Groundnut', 'Onion', 'Wheat', 'Cumin (Jeera)'],
   },
   {
     id: 'mandi-warangal',
@@ -284,7 +965,7 @@ export const MANDIS: Mandi[] = [
     address: 'Enumamula Market Yard, Warangal, Telangana 506002',
     phone: '0870-2445566',
     dailyArrivalTons: 7800,
-    featuredCrops: ['Cotton', 'Red Chilli (Dry)', 'Rice (Paddy)', 'Maize'],
+    featuredCrops: ['Cotton', 'Red Chilli (Dry)', 'Rice (Paddy)', 'Maize', 'Turmeric'],
   },
   {
     id: 'mandi-vashi',
@@ -295,7 +976,7 @@ export const MANDIS: Mandi[] = [
     address: 'APMC Market Phase II, Sector 19, Vashi, Navi Mumbai 400705',
     phone: '022-27888900',
     dailyArrivalTons: 12500,
-    featuredCrops: ['Onion', 'Potato', 'Tomato', 'Mango', 'Banana'],
+    featuredCrops: ['Onion', 'Potato', 'Tomato', 'Mango', 'Banana', 'Apple'],
   },
   {
     id: 'mandi-agra',
@@ -306,7 +987,7 @@ export const MANDIS: Mandi[] = [
     address: 'Fatehabad Road, Mandi Samiti, Agra 282006',
     phone: '0562-2334455',
     dailyArrivalTons: 6200,
-    featuredCrops: ['Potato', 'Mustard Seeds', 'Wheat', 'Tomato'],
+    featuredCrops: ['Potato', 'Mustard Seeds', 'Wheat', 'Tomato', 'Cauliflower'],
   },
   {
     id: 'mandi-indore',
@@ -328,7 +1009,7 @@ export const MANDIS: Mandi[] = [
     address: 'APMC Yard, Yeshwanthpur, Bengaluru 560022',
     phone: '080-23377889',
     dailyArrivalTons: 8100,
-    featuredCrops: ['Tomato', 'Onion', 'Potato', 'Banana', 'Mango'],
+    featuredCrops: ['Tomato', 'Onion', 'Potato', 'Banana', 'Coconut', 'Arecanut'],
   },
   {
     id: 'mandi-kota',
@@ -361,15 +1042,14 @@ export const MANDIS: Mandi[] = [
     address: 'Nashik-Ozar Highway, Pimpalgaon Baswant 422209',
     phone: '02554-232111',
     dailyArrivalTons: 7100,
-    featuredCrops: ['Tomato', 'Onion', 'Soybean'],
+    featuredCrops: ['Tomato', 'Onion', 'Soybean', 'Grapes'],
   },
 ];
 
-// Today's date strings
 const TODAY_STR = '2026-10-10';
 
 export const INITIAL_PRICE_RECORDS: MarketPriceRecord[] = [
-  // Tomato
+  // Tomato records
   {
     id: 'pr-tom-1',
     cropId: 'tomato',
@@ -459,7 +1139,7 @@ export const INITIAL_PRICE_RECORDS: MarketPriceRecord[] = [
     dataSource: 'Agmarknet APMC Daily Bulletin',
   },
 
-  // Onion
+  // Onion records
   {
     id: 'pr-on-1',
     cropId: 'onion',
@@ -549,7 +1229,7 @@ export const INITIAL_PRICE_RECORDS: MarketPriceRecord[] = [
     dataSource: 'Agmarknet APMC Daily Bulletin',
   },
 
-  // Potato
+  // Potato records
   {
     id: 'pr-pot-1',
     cropId: 'potato',
@@ -577,7 +1257,7 @@ export const INITIAL_PRICE_RECORDS: MarketPriceRecord[] = [
     cropId: 'potato',
     cropName: 'Potato',
     hindiName: 'आलू',
-    teluguName: 'బంగాళాదుంప',
+    teluguName: 'బంగాళाదుంప',
     category: 'Vegetables',
     state: 'Delhi NCR',
     district: 'North Delhi',
@@ -617,7 +1297,7 @@ export const INITIAL_PRICE_RECORDS: MarketPriceRecord[] = [
     dataSource: 'Agmarknet APMC Daily Bulletin',
   },
 
-  // Wheat
+  // Wheat records
   {
     id: 'pr-wht-1',
     cropId: 'wheat',
@@ -662,30 +1342,8 @@ export const INITIAL_PRICE_RECORDS: MarketPriceRecord[] = [
     arrivalsTons: 480,
     dataSource: 'Agmarknet APMC Daily Bulletin',
   },
-  {
-    id: 'pr-wht-3',
-    cropId: 'wheat',
-    cropName: 'Wheat',
-    hindiName: 'गेहूं',
-    teluguName: 'గోధుమ',
-    category: 'Grains & Cereals',
-    state: 'Rajasthan',
-    district: 'Kota',
-    mandiName: 'Kota Bhamashah Mandi',
-    mandiId: 'mandi-kota',
-    variety: 'Mill Quality',
-    qualityGrade: 'FAQ',
-    minPrice: 2340,
-    maxPrice: 2580,
-    modalPrice: 2460,
-    priceChange: 15,
-    marketDate: TODAY_STR,
-    lastUpdated: 'Today, 11:10 AM',
-    arrivalsTons: 540,
-    dataSource: 'Agmarknet APMC Daily Bulletin',
-  },
 
-  // Rice / Paddy
+  // Rice / Paddy records
   {
     id: 'pr-ric-1',
     cropId: 'rice',
@@ -730,30 +1388,8 @@ export const INITIAL_PRICE_RECORDS: MarketPriceRecord[] = [
     arrivalsTons: 910,
     dataSource: 'Agmarknet APMC Daily Bulletin',
   },
-  {
-    id: 'pr-ric-3',
-    cropId: 'rice',
-    cropName: 'Rice (Paddy)',
-    hindiName: 'चावल (धान)',
-    teluguName: 'వరి (ధాన్యం)',
-    category: 'Grains & Cereals',
-    state: 'Andhra Pradesh',
-    district: 'Guntur',
-    mandiName: 'Guntur Mirchi Yard',
-    mandiId: 'mandi-guntur',
-    variety: 'Common Paddy',
-    qualityGrade: 'FAQ',
-    minPrice: 2310,
-    maxPrice: 2650,
-    modalPrice: 2480,
-    priceChange: 20,
-    marketDate: TODAY_STR,
-    lastUpdated: 'Today, 09:50 AM',
-    arrivalsTons: 670,
-    dataSource: 'Agmarknet APMC Daily Bulletin',
-  },
 
-  // Cotton
+  // Cotton records
   {
     id: 'pr-cot-1',
     cropId: 'cotton',
@@ -799,7 +1435,7 @@ export const INITIAL_PRICE_RECORDS: MarketPriceRecord[] = [
     dataSource: 'Agmarknet APMC Daily Bulletin',
   },
 
-  // Soybean
+  // Soybean records
   {
     id: 'pr-soy-1',
     cropId: 'soybean',
@@ -844,30 +1480,8 @@ export const INITIAL_PRICE_RECORDS: MarketPriceRecord[] = [
     arrivalsTons: 410,
     dataSource: 'Agmarknet APMC Daily Bulletin',
   },
-  {
-    id: 'pr-soy-3',
-    cropId: 'soybean',
-    cropName: 'Soybean',
-    hindiName: 'सोयाबीन',
-    teluguName: 'సోయాబీన్',
-    category: 'Oilseeds',
-    state: 'Rajasthan',
-    district: 'Kota',
-    mandiName: 'Kota Bhamashah Mandi',
-    mandiId: 'mandi-kota',
-    variety: 'JS-335',
-    qualityGrade: 'Grade A',
-    minPrice: 4420,
-    maxPrice: 4890,
-    modalPrice: 4710,
-    priceChange: 45,
-    marketDate: TODAY_STR,
-    lastUpdated: 'Today, 11:05 AM',
-    arrivalsTons: 390,
-    dataSource: 'Agmarknet APMC Daily Bulletin',
-  },
 
-  // Red Chilli (Dry)
+  // Red Chilli records
   {
     id: 'pr-chi-1',
     cropId: 'chilli',
@@ -890,30 +1504,8 @@ export const INITIAL_PRICE_RECORDS: MarketPriceRecord[] = [
     arrivalsTons: 640,
     dataSource: 'Agmarknet APMC Daily Bulletin',
   },
-  {
-    id: 'pr-chi-2',
-    cropId: 'chilli',
-    cropName: 'Red Chilli (Dry)',
-    hindiName: 'लाल मिर्च',
-    teluguName: 'ఎండిన మిరప',
-    category: 'Spices',
-    state: 'Telangana',
-    district: 'Warangal',
-    mandiName: 'Warangal Enumamula APMC',
-    mandiId: 'mandi-warangal',
-    variety: 'Fatki / 334',
-    qualityGrade: 'Grade A',
-    minPrice: 15800,
-    maxPrice: 19400,
-    modalPrice: 18100,
-    priceChange: -150,
-    marketDate: TODAY_STR,
-    lastUpdated: 'Today, 10:40 AM',
-    arrivalsTons: 410,
-    dataSource: 'Agmarknet APMC Daily Bulletin',
-  },
 
-  // Maize
+  // Maize records
   {
     id: 'pr-mze-1',
     cropId: 'maize',
@@ -936,30 +1528,8 @@ export const INITIAL_PRICE_RECORDS: MarketPriceRecord[] = [
     arrivalsTons: 360,
     dataSource: 'Agmarknet APMC Daily Bulletin',
   },
-  {
-    id: 'pr-mze-2',
-    cropId: 'maize',
-    cropName: 'Maize (Corn)',
-    hindiName: 'मक्का',
-    teluguName: 'మొక్కజొన్న',
-    category: 'Grains & Cereals',
-    state: 'Maharashtra',
-    district: 'Nashik',
-    mandiName: 'Lasalgaon APMC',
-    mandiId: 'mandi-lasalgaon',
-    variety: 'Standard Yellow',
-    qualityGrade: 'Grade A',
-    minPrice: 2240,
-    maxPrice: 2490,
-    modalPrice: 2380,
-    priceChange: 35,
-    marketDate: TODAY_STR,
-    lastUpdated: 'Today, 09:55 AM',
-    arrivalsTons: 290,
-    dataSource: 'Agmarknet APMC Daily Bulletin',
-  },
 
-  // Mango
+  // Mango records
   {
     id: 'pr-mng-1',
     cropId: 'mango',
@@ -982,30 +1552,8 @@ export const INITIAL_PRICE_RECORDS: MarketPriceRecord[] = [
     arrivalsTons: 190,
     dataSource: 'Agmarknet APMC Daily Bulletin',
   },
-  {
-    id: 'pr-mng-2',
-    cropId: 'mango',
-    cropName: 'Mango',
-    hindiName: 'आम',
-    teluguName: 'మామిడి',
-    category: 'Fruits',
-    state: 'Karnataka',
-    district: 'Kolar',
-    mandiName: 'Kolar APMC Yard',
-    mandiId: 'mandi-kolar',
-    variety: 'Totapuri / Banganapalli',
-    qualityGrade: 'FAQ',
-    minPrice: 2800,
-    maxPrice: 4100,
-    modalPrice: 3450,
-    priceChange: 100,
-    marketDate: TODAY_STR,
-    lastUpdated: 'Today, 10:05 AM',
-    arrivalsTons: 230,
-    dataSource: 'Agmarknet APMC Daily Bulletin',
-  },
 
-  // Banana
+  // Banana records
   {
     id: 'pr-ban-1',
     cropId: 'banana',
@@ -1028,30 +1576,8 @@ export const INITIAL_PRICE_RECORDS: MarketPriceRecord[] = [
     arrivalsTons: 310,
     dataSource: 'Agmarknet APMC Daily Bulletin',
   },
-  {
-    id: 'pr-ban-2',
-    cropId: 'banana',
-    cropName: 'Banana',
-    hindiName: 'केला',
-    teluguName: 'అరటి',
-    category: 'Fruits',
-    state: 'Karnataka',
-    district: 'Bangalore Urban',
-    mandiName: 'Yeshwanthpur APMC Bangalore',
-    mandiId: 'mandi-yeshwanthpur',
-    variety: 'Robusta',
-    qualityGrade: 'Grade A',
-    minPrice: 1650,
-    maxPrice: 2250,
-    modalPrice: 2000,
-    priceChange: -40,
-    marketDate: TODAY_STR,
-    lastUpdated: 'Today, 09:40 AM',
-    arrivalsTons: 240,
-    dataSource: 'Agmarknet APMC Daily Bulletin',
-  },
 
-  // Mustard
+  // Mustard records
   {
     id: 'pr-mus-1',
     cropId: 'mustard',
@@ -1074,34 +1600,12 @@ export const INITIAL_PRICE_RECORDS: MarketPriceRecord[] = [
     arrivalsTons: 480,
     dataSource: 'Agmarknet APMC Daily Bulletin',
   },
-  {
-    id: 'pr-mus-2',
-    cropId: 'mustard',
-    cropName: 'Mustard Seeds',
-    hindiName: 'सरसों',
-    teluguName: 'ఆవాలు',
-    category: 'Oilseeds',
-    state: 'Madhya Pradesh',
-    district: 'Neemuch',
-    mandiName: 'Neemuch Krishi Upaj Mandi',
-    mandiId: 'mandi-neemuch',
-    variety: 'Pusa Jai Kisan',
-    qualityGrade: 'Grade A',
-    minPrice: 5380,
-    maxPrice: 5880,
-    modalPrice: 5690,
-    priceChange: 40,
-    marketDate: TODAY_STR,
-    lastUpdated: 'Today, 10:15 AM',
-    arrivalsTons: 350,
-    dataSource: 'Agmarknet APMC Daily Bulletin',
-  },
 
-  // Chana
+  // Chana records
   {
     id: 'pr-chn-1',
     cropId: 'chana',
-    cropName: 'Gram / Chana',
+    cropName: 'Gram / Chana (Chickpeas)',
     hindiName: 'चना',
     teluguName: 'శనగలు',
     category: 'Pulses',
@@ -1120,30 +1624,8 @@ export const INITIAL_PRICE_RECORDS: MarketPriceRecord[] = [
     arrivalsTons: 440,
     dataSource: 'Agmarknet APMC Daily Bulletin',
   },
-  {
-    id: 'pr-chn-2',
-    cropId: 'chana',
-    cropName: 'Gram / Chana',
-    hindiName: 'चना',
-    teluguName: 'శనగలు',
-    category: 'Pulses',
-    state: 'Rajasthan',
-    district: 'Kota',
-    mandiName: 'Kota Bhamashah Mandi',
-    mandiId: 'mandi-kota',
-    variety: 'Desi Chana',
-    qualityGrade: 'FAQ',
-    minPrice: 5720,
-    maxPrice: 6280,
-    modalPrice: 6050,
-    priceChange: 90,
-    marketDate: TODAY_STR,
-    lastUpdated: 'Today, 10:35 AM',
-    arrivalsTons: 380,
-    dataSource: 'Agmarknet APMC Daily Bulletin',
-  },
 
-  // Turmeric
+  // Turmeric records
   {
     id: 'pr-tur-1',
     cropId: 'turmeric',
@@ -1167,11 +1649,11 @@ export const INITIAL_PRICE_RECORDS: MarketPriceRecord[] = [
     dataSource: 'Agmarknet APMC Daily Bulletin',
   },
 
-  // Tur Dal
+  // Tur Dal records
   {
     id: 'pr-turd-1',
     cropId: 'tur-dal',
-    cropName: 'Tur (Arhar / Pigeon Pea)',
+    cropName: 'Tur (Arhar / Toor Dal)',
     hindiName: 'अरहर (तूर)',
     teluguName: 'కందులు',
     category: 'Pulses',
@@ -1191,7 +1673,7 @@ export const INITIAL_PRICE_RECORDS: MarketPriceRecord[] = [
     dataSource: 'Agmarknet APMC Daily Bulletin',
   },
 
-  // Green Chilli
+  // Green Chilli records
   {
     id: 'pr-grn-1',
     cropId: 'green-chilli',
@@ -1214,14 +1696,60 @@ export const INITIAL_PRICE_RECORDS: MarketPriceRecord[] = [
     arrivalsTons: 160,
     dataSource: 'Agmarknet APMC Daily Bulletin',
   },
+
+  // Coconut record (Plantation crop)
+  {
+    id: 'pr-coc-1',
+    cropId: 'coconut',
+    cropName: 'Coconut',
+    hindiName: 'नारियल',
+    teluguName: 'కొబ్బరికాయ',
+    category: 'Plantation Crops',
+    state: 'Karnataka',
+    district: 'Bangalore Urban',
+    mandiName: 'Yeshwanthpur APMC Bangalore',
+    mandiId: 'mandi-yeshwanthpur',
+    variety: 'West Coast Tall',
+    qualityGrade: 'Grade A',
+    minPrice: 3200,
+    maxPrice: 4100,
+    modalPrice: 3650,
+    priceChange: 80,
+    marketDate: TODAY_STR,
+    lastUpdated: 'Today, 10:50 AM',
+    arrivalsTons: 390,
+    dataSource: 'Agmarknet APMC Daily Bulletin',
+  },
+
+  // Arecanut record (Plantation crop)
+  {
+    id: 'pr-are-1',
+    cropId: 'arecanut',
+    cropName: 'Arecanut (Betel Nut / Supari)',
+    hindiName: 'सुपारी',
+    teluguName: 'పోకచెక్క',
+    category: 'Plantation Crops',
+    state: 'Karnataka',
+    district: 'Bangalore Urban',
+    mandiName: 'Yeshwanthpur APMC Bangalore',
+    mandiId: 'mandi-yeshwanthpur',
+    variety: 'Chali Supari',
+    qualityGrade: 'Super',
+    minPrice: 38000,
+    maxPrice: 44500,
+    modalPrice: 41200,
+    priceChange: 450,
+    marketDate: TODAY_STR,
+    lastUpdated: 'Today, 11:05 AM',
+    arrivalsTons: 120,
+    dataSource: 'Agmarknet APMC Daily Bulletin',
+  },
 ];
 
-// Generate realistic deterministic 90-day historical points for key crops
+// Generate deterministic 90-day history for all crops
 export function generateHistoricalPoints(cropId: string, basePrice: number): HistoricalPricePoint[] {
   const points: HistoricalPricePoint[] = [];
   const now = new Date('2026-10-10T00:00:00Z');
-
-  // Deterministic seed variations based on crop
   const seed = cropId.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
 
   for (let i = 89; i >= 0; i--) {
@@ -1232,10 +1760,9 @@ export function generateHistoricalPoints(cropId: string, basePrice: number): His
     const day = d.getDate();
     const displayDate = `${day} ${month}`;
 
-    // Create a realistic cyclic and trend wave
     const wave = Math.sin((90 - i + seed) * 0.12) * (basePrice * 0.12);
     const noise = Math.cos((90 - i * 1.5 + seed * 2) * 0.25) * (basePrice * 0.05);
-    const trend = ((90 - i) / 90) * (basePrice * 0.08); // general slight upward movement
+    const trend = ((90 - i) / 90) * (basePrice * 0.08);
 
     const modal = Math.round(basePrice + wave + noise + trend);
     const spread = Math.round(modal * 0.12);
@@ -1256,7 +1783,6 @@ export function generateHistoricalPoints(cropId: string, basePrice: number): His
   return points;
 }
 
-// Pre-cached history lookup
 export const CROP_HISTORY_MAP: Record<string, HistoricalPricePoint[]> = {
   tomato: generateHistoricalPoints('tomato', 2350),
   onion: generateHistoricalPoints('onion', 2150),
@@ -1274,9 +1800,10 @@ export const CROP_HISTORY_MAP: Record<string, HistoricalPricePoint[]> = {
   turmeric: generateHistoricalPoints('turmeric', 13400),
   'tur-dal': generateHistoricalPoints('tur-dal', 10100),
   'green-chilli': generateHistoricalPoints('green-chilli', 3700),
+  coconut: generateHistoricalPoints('coconut', 3650),
+  arecanut: generateHistoricalPoints('arecanut', 41200),
 };
 
-// Hierarchy extraction helpers
 export function getUniqueStates(records: MarketPriceRecord[]): string[] {
   return Array.from(new Set(records.map(r => r.state))).sort();
 }

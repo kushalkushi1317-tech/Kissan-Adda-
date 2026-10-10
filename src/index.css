@@ -2,15 +2,185 @@
 
 @layer base {
   :root {
-    --color-brand-dark: #176B35;
-    --color-brand-primary: #2E8B45;
-    --color-brand-light: #3FA357;
-    --color-brand-bg: #F5F8F3;
-    --color-brand-accent: #FEF3C7;
+    /* Nature-Inspired Base Theme Palette */
+    --color-brand-forest: #14532D;
+    --color-brand-leaf: #22A447;
+    --color-brand-lime: #A3E635;
+    --color-brand-cream: #FFFDF2;
+    --color-brand-earth: #8B5E3C;
+    --color-brand-harvest: #FACC15;
+
+    /* Dynamic Theme Mapping (Default: Nature Green) */
+    --theme-primary: #14532D;
+    --theme-primary-hover: #0E3E21;
+    --theme-secondary: #22A447;
+    --theme-accent: #A3E635;
+    --theme-accent-gold: #FACC15;
+    --theme-bg: #FFFDF2;
+    --theme-surface: #FFFFFF;
+    --theme-surface-subtle: #F5F8F3;
+    --theme-border: #E2E8F0;
+    --theme-text-main: #1C1917;
+    --theme-text-muted: #64748B;
+    --theme-hero-from: #14532D;
+    --theme-hero-via: #166534;
+    --theme-hero-to: #14532D;
+  }
+
+  /* 1. Nature Green Theme */
+  :root.theme-nature-green {
+    --theme-primary: #14532D;
+    --theme-primary-hover: #0E3E21;
+    --theme-secondary: #22A447;
+    --theme-accent: #A3E635;
+    --theme-bg: #FFFDF2;
+    --theme-surface: #FFFFFF;
+    --theme-surface-subtle: #F3F8F2;
+    --theme-border: #E3EDE2;
+    --theme-hero-from: #14532D;
+    --theme-hero-via: #166534;
+    --theme-hero-to: #14532D;
+  }
+
+  /* 2. Fresh Lime Theme */
+  :root.theme-fresh-lime {
+    --theme-primary: #15803D;
+    --theme-primary-hover: #166534;
+    --theme-secondary: #22A447;
+    --theme-accent: #84CC16;
+    --theme-bg: #F7FEE7;
+    --theme-surface: #FFFFFF;
+    --theme-surface-subtle: #ECFCCA;
+    --theme-border: #D9F99D;
+    --theme-hero-from: #166534;
+    --theme-hero-via: #15803D;
+    --theme-hero-to: #166534;
+  }
+
+  /* 3. Harvest Gold Theme */
+  :root.theme-harvest-gold {
+    --theme-primary: #854D0E;
+    --theme-primary-hover: #713F12;
+    --theme-secondary: #CA8A04;
+    --theme-accent: #EAB308;
+    --theme-bg: #FEFCE8;
+    --theme-surface: #FFFFFF;
+    --theme-surface-subtle: #FEF9C3;
+    --theme-border: #FEF08A;
+    --theme-hero-from: #713F12;
+    --theme-hero-via: #854D0E;
+    --theme-hero-to: #713F12;
+  }
+
+  /* 4. Earth Brown Theme */
+  :root.theme-earth-brown {
+    --theme-primary: #78350F;
+    --theme-primary-hover: #5F2B0C;
+    --theme-secondary: #8B5E3C;
+    --theme-accent: #D97706;
+    --theme-bg: #FFFBEB;
+    --theme-surface: #FFFFFF;
+    --theme-surface-subtle: #FEF3C7;
+    --theme-border: #FDE68A;
+    --theme-hero-from: #5F2B0C;
+    --theme-hero-via: #78350F;
+    --theme-hero-to: #5F2B0C;
+  }
+
+  /* 5. Forest Dark Theme */
+  :root.theme-forest-dark,
+  :root.dark {
+    --theme-primary: #15803D;
+    --theme-primary-hover: #22C55E;
+    --theme-secondary: #22A447;
+    --theme-accent: #A3E635;
+    --theme-bg: #071C11;
+    --theme-surface: #0E2E1D;
+    --theme-surface-subtle: #143E28;
+    --theme-border: #1C5436;
+    --theme-text-main: #F2FDF5;
+    --theme-text-muted: #94A3B8;
+    --theme-hero-from: #061F12;
+    --theme-hero-via: #092B19;
+    --theme-hero-to: #061F12;
   }
 
   body {
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--theme-bg);
+    color: var(--theme-text-main);
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  /* Accessible Text Scale */
+  :root.text-scale-large {
+    font-size: 110%;
+  }
+}
+
+/* Animations for floating agricultural background */
+@keyframes float-slow {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-18px) rotate(4deg);
+  }
+}
+
+@keyframes float-drift {
+  0%, 100% {
+    transform: translate(0px, 0px) rotate(0deg);
+  }
+  33% {
+    transform: translate(12px, -14px) rotate(6deg);
+  }
+  66% {
+    transform: translate(-10px, -8px) rotate(-4deg);
+  }
+}
+
+@keyframes float-reverse {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(16px) rotate(-5deg);
+  }
+}
+
+@keyframes sway-gentle {
+  0%, 100% {
+    transform: rotate(-3deg);
+  }
+  50% {
+    transform: rotate(3deg);
+  }
+}
+
+.animate-float-slow {
+  animation: float-slow 7s ease-in-out infinite;
+}
+
+.animate-float-drift {
+  animation: float-drift 10s ease-in-out infinite;
+}
+
+.animate-float-reverse {
+  animation: float-reverse 8s ease-in-out infinite;
+}
+
+.animate-sway-gentle {
+  animation: sway-gentle 6s ease-in-out infinite alternate;
+}
+
+/* Reduced Motion Override */
+:root.reduce-motion *,
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
   }
 }
 
@@ -20,11 +190,14 @@
   width: 6px;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: rgba(0, 0, 0, 0.04);
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
   background: #cbd5e1;
-  border-radius: 3px;
+  border-radius: 4px;
+}
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #1e4b33;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;

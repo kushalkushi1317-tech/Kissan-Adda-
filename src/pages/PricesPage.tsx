@@ -11,20 +11,23 @@ import {
   MapPin,
   TrendingUp,
   TrendingDown,
+  ArrowUpRight,
   Sparkles,
   Calendar,
   Layers,
+  Star,
   Check
 } from 'lucide-react';
 import { useRouter } from '../context/RouterContext';
 import { useLanguage } from '../context/LanguageContext';
 import { usePriceData } from '../context/PriceDataContext';
+import { VoiceSearchButton } from '../components/VoiceSearchButton';
 import { CROP_CATEGORIES } from '../data/mockData';
 import { MarketPriceRecord } from '../types';
 
 export const PricesPage: React.FC = () => {
   const { navigate } = useRouter();
-  const { t, language } = useLanguage();
+  const { t, language, getCropLocalizedName } = useLanguage();
   const { 
     records, 
     crops, 
@@ -46,6 +49,9 @@ export const PricesPage: React.FC = () => {
     selectedCategoryFilter,
     setSelectedCategoryFilter,
     resetAllFilters,
+    isCropInWatchlist,
+    toggleCropWatchlist,
+    recordCropView,
   } = usePriceData();
 
   // Sorting
@@ -54,7 +60,7 @@ export const PricesPage: React.FC = () => {
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(12);
 
   // Suggestions
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -67,12 +73,19 @@ export const PricesPage: React.FC = () => {
     return records.filter((r) => {
       // Search
       if (globalSearch.trim()) {
-        const q = globalSearch.toLowerCase();
+        const q = globalSearch.toLowerCase().trim();
         const matchesName = r.cropName.toLowerCase().includes(q) ||
           r.hindiName.toLowerCase().includes(q) ||
           r.teluguName.toLowerCase().includes(q) ||
           r.mandiName.toLowerCase().includes(q);
-        if (!matchesName) return false;
+        
+        // Also check regional aliases from crop definition
+        const matchedCrop = crops.find(c => c.id === r.cropId);
+        const matchesRegional = matchedCrop?.regionalNames && Object.values(matchedCrop.regionalNames).some(
+          v => v && v.toLowerCase().includes(q)
+        );
+
+        if (!matchesName && !matchesRegional) return false;
       }
 
       // Category
@@ -99,6 +112,7 @@ export const PricesPage: React.FC = () => {
     });
   }, [
     records, 
+    crops,
     globalSearch, 
     selectedCategoryFilter, 
     selectedStateFilter, 
@@ -147,7 +161,6 @@ export const PricesPage: React.FC = () => {
     const headers = [
       'Crop Name',
       'Hindi Name',
-      'Telugu Name',
       'Category',
       'State',
       'District',
@@ -164,7 +177,6 @@ export const PricesPage: React.FC = () => {
     const rows = sortedRecords.map(r => [
       `"${r.cropName}"`,
       `"${r.hindiName}"`,
-      `"${r.teluguName}"`,
       `"${r.category}"`,
       `"${r.state}"`,
       `"${r.district}"`,
@@ -188,18 +200,15 @@ export const PricesPage: React.FC = () => {
     document.body.removeChild(link);
   };
 
-  const getCropDisplayName = (cropId: string, fallback: string) => {
-    const c = crops.find(item => item.id === cropId);
-    if (!c) return fallback;
-    if (language === 'hi') return c.hindiName;
-    if (language === 'te') return c.teluguName;
-    return c.name;
+  const handleRowClick = (cropId: string) => {
+    recordCropView(cropId);
+    navigate(`/crops/${cropId}`);
   };
 
   // Search auto-complete suggestions
   const searchSuggestions = useMemo(() => {
     if (!globalSearch.trim()) return [];
-    const q = globalSearch.toLowerCase();
+    const q = globalSearch.toLowerCase().trim();
     return crops
       .filter(c => c.name.toLowerCase().includes(q) || c.hindiName.includes(q))
       .map(c => c.name)
@@ -209,16 +218,16 @@ export const PricesPage: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-6">
       {/* Page Title & Controls */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-stone-200 pb-5">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-stone-200 dark:border-stone-800 pb-5">
         <div>
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#176B35]">
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#14532D] dark:text-emerald-400">
             <MapPin className="w-3.5 h-3.5" />
             <span>APMC Mandi Price Intelligence</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-stone-900 tracking-tight mt-1">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-stone-900 dark:text-white tracking-tight mt-1 font-serif">
             {t('navPrices', 'Crop Prices & Market Rates')}
           </h1>
-          <p className="text-xs sm:text-sm text-stone-500 mt-1">
+          <p className="text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-1">
             Compare minimum, maximum, and modal wholesale rates across licensed APMC mandis.
           </p>
         </div>
@@ -226,13 +235,13 @@ export const PricesPage: React.FC = () => {
         {/* Top actions: Unit switch & CSV export */}
         <div className="flex items-center gap-3">
           {/* Unit Toggle */}
-          <div className="flex items-center bg-stone-100 p-0.5 rounded-lg border border-stone-300">
+          <div className="flex items-center bg-stone-100 dark:bg-stone-800 p-0.5 rounded-lg border border-stone-300 dark:border-stone-700">
             <button
               onClick={() => setUnit('quintal')}
               className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all ${
                 unit === 'quintal'
-                  ? 'bg-[#176B35] text-white shadow-xs'
-                  : 'text-stone-600 hover:text-stone-900'
+                  ? 'bg-[#14532D] dark:bg-emerald-600 text-white shadow-xs'
+                  : 'text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white'
               }`}
             >
               ₹/Quintal
@@ -241,8 +250,8 @@ export const PricesPage: React.FC = () => {
               onClick={() => setUnit('kg')}
               className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all ${
                 unit === 'kg'
-                  ? 'bg-[#176B35] text-white shadow-xs'
-                  : 'text-stone-600 hover:text-stone-900'
+                  ? 'bg-[#14532D] dark:bg-emerald-600 text-white shadow-xs'
+                  : 'text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white'
               }`}
             >
               ₹/Kg
@@ -252,20 +261,20 @@ export const PricesPage: React.FC = () => {
           {/* Export CSV button */}
           <button
             onClick={exportToCSV}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-white border border-stone-300 hover:bg-stone-50 text-stone-700 text-xs font-semibold rounded-lg shadow-xs transition-colors"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 text-xs font-semibold rounded-lg shadow-xs transition-colors"
           >
-            <Download className="w-3.5 h-3.5 text-emerald-700" />
+            <Download className="w-3.5 h-3.5 text-emerald-700 dark:text-emerald-400" />
             <span>Export CSV</span>
           </button>
         </div>
       </div>
 
       {/* Filter and Search Panel */}
-      <div className="bg-white rounded-xl border border-stone-200/90 p-4 sm:p-5 shadow-xs space-y-4">
-        {/* Top search & clear row */}
+      <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200/90 dark:border-stone-800 p-4 sm:p-5 shadow-xs space-y-4">
+        {/* Top search with Voice Search */}
         <div className="flex flex-col sm:flex-row gap-3">
-          <div className="relative flex-1">
-            <Search className="w-4 h-4 text-stone-400 absolute left-3.5 top-3 pointer-events-none" />
+          <div className="relative flex-1 flex items-center">
+            <Search className="w-4 h-4 text-stone-400 absolute left-3.5 pointer-events-none" />
             <input
               type="text"
               value={globalSearch}
@@ -275,25 +284,29 @@ export const PricesPage: React.FC = () => {
                 setCurrentPage(1);
               }}
               onFocus={() => setShowSuggestions(true)}
-              placeholder={t('searchCropPlaceholder', 'Search crops e.g. Tomato, Onion, Wheat...')}
-              className="w-full pl-10 pr-10 py-2 text-xs sm:text-sm bg-stone-50 border border-stone-300 rounded-lg focus:bg-white focus:ring-2 focus:ring-emerald-500/20 focus:border-[#2E8B45] focus:outline-hidden"
+              placeholder={t('searchCropPlaceholder', 'Search crops e.g. Tomato, Onion, Wheat, Rice...')}
+              className="w-full pl-10 pr-20 py-2.5 text-xs sm:text-sm bg-stone-50 dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-xl focus:bg-white dark:focus:bg-stone-900 focus:ring-2 focus:ring-emerald-500/20 focus:border-[#22A447] focus:outline-hidden text-stone-900 dark:text-white"
             />
-            {globalSearch && (
-              <button
-                onClick={() => {
-                  setGlobalSearch('');
-                  setShowSuggestions(false);
-                  setCurrentPage(1);
-                }}
-                className="absolute right-3 top-2.5 text-xs text-stone-400 hover:text-stone-700 font-medium"
-              >
-                Clear
-              </button>
-            )}
+            
+            <div className="absolute right-2 flex items-center gap-1">
+              {globalSearch && (
+                <button
+                  onClick={() => {
+                    setGlobalSearch('');
+                    setShowSuggestions(false);
+                    setCurrentPage(1);
+                  }}
+                  className="text-xs text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 font-medium px-1.5 py-1"
+                >
+                  Clear
+                </button>
+              )}
+              <VoiceSearchButton onSearchResult={(val) => { setGlobalSearch(val); setCurrentPage(1); }} />
+            </div>
 
             {/* Suggestions dropdown */}
             {showSuggestions && searchSuggestions.length > 0 && (
-              <div className="absolute z-20 left-0 right-0 mt-1 bg-white border border-stone-200 rounded-lg shadow-md py-1">
+              <div className="absolute z-20 top-full left-0 right-0 mt-1 bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-xl shadow-lg py-1">
                 {searchSuggestions.map((sug) => (
                   <button
                     key={sug}
@@ -303,7 +316,7 @@ export const PricesPage: React.FC = () => {
                       setShowSuggestions(false);
                       setCurrentPage(1);
                     }}
-                    className="w-full text-left px-4 py-2 text-xs text-stone-800 hover:bg-emerald-50 hover:text-[#176B35] font-medium"
+                    className="w-full text-left px-4 py-2 text-xs text-stone-800 dark:text-stone-200 hover:bg-emerald-50 dark:hover:bg-emerald-950/60 font-medium"
                   >
                     {sug}
                   </button>
@@ -318,7 +331,7 @@ export const PricesPage: React.FC = () => {
                 resetAllFilters();
                 setCurrentPage(1);
               }}
-              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-stone-600 hover:text-stone-900 hover:bg-stone-100 rounded-lg border border-stone-200 transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg border border-stone-200 dark:border-stone-700 transition-colors"
             >
               <RotateCcw className="w-3.5 h-3.5" />
               <span>{t('resetFilters', 'Reset Filters')}</span>
@@ -327,9 +340,9 @@ export const PricesPage: React.FC = () => {
         </div>
 
         {/* Cascading State -> District -> Mandi Dropdowns */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-stone-100">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-stone-100 dark:border-stone-800">
           <div>
-            <label className="block text-[11px] font-bold uppercase tracking-wider text-stone-500 mb-1">
+            <label className="block text-[11px] font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400 mb-1">
               {t('thState', 'State')}
             </label>
             <select
@@ -340,7 +353,7 @@ export const PricesPage: React.FC = () => {
                 setSelectedMandiFilter('');
                 setCurrentPage(1);
               }}
-              className="w-full px-3 py-2 text-xs bg-stone-50 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500/20 focus:border-[#2E8B45] focus:outline-hidden text-stone-800"
+              className="w-full px-3 py-2 text-xs bg-stone-50 dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg focus:ring-2 focus:ring-emerald-500/20 focus:border-[#22A447] focus:outline-hidden text-stone-800 dark:text-stone-200"
             >
               <option value="">{t('selectState', 'All States')}</option>
               {statesList.map(st => (
@@ -350,7 +363,7 @@ export const PricesPage: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-[11px] font-bold uppercase tracking-wider text-stone-500 mb-1">
+            <label className="block text-[11px] font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400 mb-1">
               {t('thDistrict', 'District')}
             </label>
             <select
@@ -361,7 +374,7 @@ export const PricesPage: React.FC = () => {
                 setSelectedMandiFilter('');
                 setCurrentPage(1);
               }}
-              className="w-full px-3 py-2 text-xs bg-stone-50 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500/20 focus:border-[#2E8B45] focus:outline-hidden text-stone-800 disabled:opacity-50 disabled:bg-stone-100"
+              className="w-full px-3 py-2 text-xs bg-stone-50 dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg focus:ring-2 focus:ring-emerald-500/20 focus:border-[#22A447] focus:outline-hidden text-stone-800 dark:text-stone-200 disabled:opacity-50"
             >
               <option value="">{t('selectDistrict', 'All Districts')}</option>
               {availableDistricts.map(dt => (
@@ -371,7 +384,7 @@ export const PricesPage: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-[11px] font-bold uppercase tracking-wider text-stone-500 mb-1">
+            <label className="block text-[11px] font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400 mb-1">
               {t('thMandiName', 'Mandi')}
             </label>
             <select
@@ -381,7 +394,7 @@ export const PricesPage: React.FC = () => {
                 setSelectedMandiFilter(e.target.value);
                 setCurrentPage(1);
               }}
-              className="w-full px-3 py-2 text-xs bg-stone-50 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500/20 focus:border-[#2E8B45] focus:outline-hidden text-stone-800 disabled:opacity-50 disabled:bg-stone-100"
+              className="w-full px-3 py-2 text-xs bg-stone-50 dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg focus:ring-2 focus:ring-emerald-500/20 focus:border-[#22A447] focus:outline-hidden text-stone-800 dark:text-stone-200 disabled:opacity-50"
             >
               <option value="">{t('selectMandi', 'All Mandis')}</option>
               {availableMandis.map(md => (
@@ -391,15 +404,15 @@ export const PricesPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Category Filter Tabs */}
-        <div className="pt-2 border-t border-stone-100">
+        {/* Category Filter Tabs (All 8 categories) */}
+        <div className="pt-2 border-t border-stone-100 dark:border-stone-800">
           <div className="flex items-center gap-1.5 overflow-x-auto custom-scrollbar pb-1">
             <button
               onClick={() => { setSelectedCategoryFilter('All'); setCurrentPage(1); }}
               className={`px-3 py-1.5 text-xs font-semibold rounded-lg whitespace-nowrap transition-colors ${
                 selectedCategoryFilter === 'All'
-                  ? 'bg-[#176B35] text-white shadow-xs'
-                  : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
+                  ? 'bg-[#14532D] dark:bg-emerald-600 text-white shadow-xs'
+                  : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700'
               }`}
             >
               {t('allCategories', 'All Categories')}
@@ -410,8 +423,8 @@ export const PricesPage: React.FC = () => {
                 onClick={() => { setSelectedCategoryFilter(cat); setCurrentPage(1); }}
                 className={`px-3 py-1.5 text-xs font-semibold rounded-lg whitespace-nowrap transition-colors ${
                   selectedCategoryFilter === cat
-                    ? 'bg-[#176B35] text-white shadow-xs'
-                    : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
+                    ? 'bg-[#14532D] dark:bg-emerald-600 text-white shadow-xs'
+                    : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700'
                 }`}
               >
                 {cat}
@@ -422,14 +435,14 @@ export const PricesPage: React.FC = () => {
       </div>
 
       {/* Results Header: Count and Sort */}
-      <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-stone-600 px-1">
+      <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-stone-600 dark:text-stone-400 px-1">
         <div>
           Showing <strong>{totalRecords}</strong> {t('recordsFound', 'market records found')}
-          {unit === 'kg' && <span className="ml-2 text-emerald-800 font-semibold">(Displaying in ₹/kg)</span>}
+          {unit === 'kg' && <span className="ml-2 text-emerald-800 dark:text-emerald-400 font-semibold">(Displaying in ₹/kg)</span>}
         </div>
 
         <div className="flex items-center gap-3">
-          <label className="text-stone-500">Sort by:</label>
+          <label className="text-stone-500 dark:text-stone-400">Sort by:</label>
           <select
             value={`${sortBy}-${sortDirection}`}
             onChange={(e) => {
@@ -438,7 +451,7 @@ export const PricesPage: React.FC = () => {
               setSortDirection(d as any);
               setCurrentPage(1);
             }}
-            className="bg-white border border-stone-300 rounded-md px-2 py-1 text-xs font-medium focus:outline-hidden"
+            className="bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-md px-2 py-1 text-xs font-medium focus:outline-hidden text-stone-800 dark:text-stone-200"
           >
             <option value="modalPrice-desc">Modal Price: High to Low</option>
             <option value="modalPrice-asc">Modal Price: Low to High</option>
@@ -450,14 +463,15 @@ export const PricesPage: React.FC = () => {
       </div>
 
       {/* Main Table (Desktop / Tablet) */}
-      <div className="hidden md:block bg-white rounded-xl border border-stone-200/90 shadow-xs overflow-hidden">
+      <div className="hidden md:block bg-white dark:bg-stone-900 rounded-2xl border border-stone-200/90 dark:border-stone-800 shadow-xs overflow-hidden">
         <div className="overflow-x-auto custom-scrollbar">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="bg-stone-50 border-b border-stone-200 text-stone-600 font-bold uppercase tracking-wider">
+              <tr className="bg-stone-50 dark:bg-stone-800/60 border-b border-stone-200 dark:border-stone-800 text-stone-600 dark:text-stone-300 font-bold uppercase tracking-wider">
+                <th className="py-3.5 px-3 w-8">★</th>
                 <th 
                   onClick={() => handleSort('cropName')}
-                  className="py-3.5 px-4 cursor-pointer hover:bg-stone-100 transition-colors"
+                  className="py-3.5 px-4 cursor-pointer hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
                 >
                   <div className="flex items-center gap-1">
                     <span>{t('thCropName', 'Crop Name')}</span>
@@ -469,7 +483,7 @@ export const PricesPage: React.FC = () => {
                 <th className="py-3.5 px-3">{t('thDistrict', 'District')}</th>
                 <th 
                   onClick={() => handleSort('mandiName')}
-                  className="py-3.5 px-3 cursor-pointer hover:bg-stone-100 transition-colors"
+                  className="py-3.5 px-3 cursor-pointer hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
                 >
                   <div className="flex items-center gap-1">
                     <span>{t('thMandiName', 'Mandi')}</span>
@@ -480,102 +494,123 @@ export const PricesPage: React.FC = () => {
                 <th className="py-3.5 px-3 text-right">{t('thMaxPrice', 'Max Price')}</th>
                 <th 
                   onClick={() => handleSort('modalPrice')}
-                  className="py-3.5 px-4 text-right cursor-pointer hover:bg-stone-100 transition-colors text-[#176B35]"
+                  className="py-3.5 px-4 text-right cursor-pointer hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors text-emerald-800 dark:text-emerald-400 font-extrabold"
                 >
                   <div className="flex items-center justify-end gap-1">
                     <span>{t('thModalPrice', 'Modal Price')}</span>
-                    <ArrowUpDown className="w-3 h-3 text-[#176B35]" />
+                    <ArrowUpDown className="w-3 h-3 text-emerald-700" />
                   </div>
                 </th>
                 <th className="py-3.5 px-3 text-center">{t('thUnit', 'Unit')}</th>
                 <th 
                   onClick={() => handleSort('priceChange')}
-                  className="py-3.5 px-3 text-right cursor-pointer hover:bg-stone-100 transition-colors"
+                  className="py-3.5 px-3 text-right cursor-pointer hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
                 >
                   <div className="flex items-center justify-end gap-1">
                     <span>{t('thPriceChange', 'Change')}</span>
                     <ArrowUpDown className="w-3 h-3 text-stone-400" />
                   </div>
                 </th>
-                <th className="py-3.5 px-3 text-stone-500">{t('thMarketDate', 'Date')}</th>
+                <th className="py-3.5 px-3 text-stone-500 dark:text-stone-400">{t('thMarketDate', 'Date')}</th>
                 <th className="py-3.5 px-4 text-center">{t('thActions', 'Action')}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-stone-100">
+            <tbody className="divide-y divide-stone-100 dark:divide-stone-800">
               {paginatedRecords.length > 0 ? (
-                paginatedRecords.map((r) => (
-                  <tr key={r.id} className="hover:bg-emerald-50/40 transition-colors">
-                    <td className="py-3 px-4 font-bold text-stone-900">
-                      <button
-                        onClick={() => navigate(`/crops/${r.cropId}`)}
-                        className="hover:text-[#176B35] transition-colors text-left font-bold"
-                      >
-                        {getCropDisplayName(r.cropId, r.cropName)}
-                        <span className="block text-[11px] font-normal text-stone-500">
-                          {r.variety} · {r.qualityGrade}
+                paginatedRecords.map((r) => {
+                  const isStarred = isCropInWatchlist(r.cropId);
+                  return (
+                    <tr key={r.id} className="hover:bg-emerald-50/40 dark:hover:bg-emerald-950/30 transition-colors">
+                      <td className="py-3 px-3 text-center">
+                        <button
+                          onClick={() => toggleCropWatchlist(r.cropId)}
+                          className="text-stone-300 hover:text-amber-500 transition-colors"
+                          title="Star crop"
+                        >
+                          <Star className={`w-3.5 h-3.5 ${isStarred ? 'fill-amber-400 text-amber-400' : ''}`} />
+                        </button>
+                      </td>
+                      <td className="py-3 px-4 font-bold text-stone-900 dark:text-white">
+                        <button
+                          onClick={() => handleRowClick(r.cropId)}
+                          className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors text-left font-bold"
+                        >
+                          {r.cropName}
+                          <span className="block text-[11px] font-normal text-stone-500 dark:text-stone-400">
+                            {r.variety} · {r.qualityGrade}
+                          </span>
+                        </button>
+                      </td>
+                      <td className="py-3 px-3 text-stone-600 dark:text-stone-400 text-[11px]">
+                        {r.category}
+                      </td>
+                      <td className="py-3 px-3 text-stone-700 dark:text-stone-300">
+                        {r.state}
+                      </td>
+                      <td className="py-3 px-3 text-stone-600 dark:text-stone-400">
+                        {r.district}
+                      </td>
+                      <td className="py-3 px-3 font-semibold text-stone-800 dark:text-stone-200">
+                        <button
+                          onClick={() => navigate(`/markets/${r.mandiId}`)}
+                          className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors text-left"
+                        >
+                          {r.mandiName}
+                        </button>
+                      </td>
+                      <td className="py-3 px-3 text-right font-mono text-stone-600 dark:text-stone-300">
+                        {formatPrice(r.minPrice)}
+                      </td>
+                      <td className="py-3 px-3 text-right font-mono text-stone-600 dark:text-stone-300">
+                        {formatPrice(r.maxPrice)}
+                      </td>
+                      <td className="py-3 px-4 text-right font-mono font-extrabold text-[#14532D] dark:text-emerald-400 text-sm">
+                        {formatPrice(r.modalPrice)}
+                      </td>
+                      <td className="py-3 px-3 text-center text-[11px] text-stone-500 dark:text-stone-400 font-mono">
+                        {unit === 'kg' ? 'kg' : 'qtl'}
+                      </td>
+                      <td className="py-3 px-3 text-right font-medium">
+                        <span className={`inline-flex items-center gap-0.5 text-xs font-bold ${
+                          r.priceChange > 0 
+                            ? 'text-emerald-700 dark:text-emerald-400' 
+                            : r.priceChange < 0 
+                            ? 'text-red-600 dark:text-red-400' 
+                            : 'text-stone-500'
+                        }`}>
+                          {r.priceChange > 0 ? (
+                            <>
+                              <ArrowUpRight className="w-3.5 h-3.5" />
+                              <span>+₹{r.priceChange}</span>
+                            </>
+                          ) : r.priceChange < 0 ? (
+                            <>
+                              <TrendingDown className="w-3.5 h-3.5" />
+                              <span>-₹{Math.abs(r.priceChange)}</span>
+                            </>
+                          ) : (
+                            <span>₹0</span>
+                          )}
                         </span>
-                      </button>
-                    </td>
-                    <td className="py-3 px-3 text-stone-600 text-[11px]">
-                      {r.category}
-                    </td>
-                    <td className="py-3 px-3 text-stone-700">
-                      {r.state}
-                    </td>
-                    <td className="py-3 px-3 text-stone-600">
-                      {r.district}
-                    </td>
-                    <td className="py-3 px-3 font-semibold text-stone-800">
-                      <button
-                        onClick={() => navigate(`/markets/${r.mandiId}`)}
-                        className="hover:text-[#176B35] transition-colors text-left"
-                      >
-                        {r.mandiName}
-                      </button>
-                    </td>
-                    <td className="py-3 px-3 text-right font-mono text-stone-600">
-                      {formatPrice(r.minPrice)}
-                    </td>
-                    <td className="py-3 px-3 text-right font-mono text-stone-600">
-                      {formatPrice(r.maxPrice)}
-                    </td>
-                    <td className="py-3 px-4 text-right font-mono font-extrabold text-[#176B35] text-sm">
-                      {formatPrice(r.modalPrice)}
-                    </td>
-                    <td className="py-3 px-3 text-center text-[11px] text-stone-500 font-mono">
-                      {unit === 'kg' ? 'kg' : 'qtl'}
-                    </td>
-                    <td className="py-3 px-3 text-right font-medium">
-                      <span className={`inline-flex items-center gap-0.5 text-xs font-bold ${
-                        r.priceChange > 0 
-                          ? 'text-emerald-700' 
-                          : r.priceChange < 0 
-                          ? 'text-red-600' 
-                          : 'text-stone-500'
-                      }`}>
-                        {r.priceChange > 0 ? `+₹${r.priceChange}` : r.priceChange < 0 ? `-₹${Math.abs(r.priceChange)}` : '₹0'}
-                      </span>
-                    </td>
-                    <td className="py-3 px-3 text-[11px] text-stone-500 whitespace-nowrap">
-                      {r.marketDate}
-                    </td>
-                    <td className="py-3 px-4 text-center">
-                      <button
-                        onClick={() => navigate(`/crops/${r.cropId}`)}
-                        className="px-2.5 py-1 text-xs font-semibold text-[#176B35] bg-emerald-50 hover:bg-emerald-100 rounded-lg transition-colors border border-emerald-200"
-                      >
-                        {t('thDetails', 'Details')}
-                      </button>
-                    </td>
-                  </tr>
-                ))
+                      </td>
+                      <td className="py-3 px-3 text-[11px] text-stone-500 dark:text-stone-400 whitespace-nowrap">
+                        {r.marketDate}
+                      </td>
+                      <td className="py-3 px-4 text-center">
+                        <button
+                          onClick={() => handleRowClick(r.cropId)}
+                          className="px-2.5 py-1 text-xs font-semibold text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100 rounded-lg transition-colors border border-emerald-200 dark:border-emerald-800"
+                        >
+                          {t('thDetails', 'Details')}
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })
               ) : (
                 <tr>
-                  <td colSpan={12} className="py-12 text-center text-stone-500 text-sm">
+                  <td colSpan={13} className="py-12 text-center text-stone-500 dark:text-stone-400 text-sm">
                     {t('noRecordsFound', 'No market price records found matching your filters.')}
-                    <div className="mt-2 text-xs text-stone-400">
-                      {t('tryAdjustingFilters', 'Try clearing your search or selecting a different state/district.')}
-                    </div>
                   </td>
                 </tr>
               )}
@@ -584,72 +619,84 @@ export const PricesPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Mobile Card View (Small screens) */}
+      {/* Mobile Card View */}
       <div className="md:hidden space-y-3">
         {paginatedRecords.length > 0 ? (
-          paginatedRecords.map((r) => (
-            <div 
-              key={r.id} 
-              className="bg-white rounded-xl border border-stone-200 p-4 shadow-xs space-y-3"
-            >
-              <div className="flex items-start justify-between">
-                <div>
-                  <button
-                    onClick={() => navigate(`/crops/${r.cropId}`)}
-                    className="font-bold text-base text-stone-900 hover:text-[#176B35] text-left"
-                  >
-                    {getCropDisplayName(r.cropId, r.cropName)}
-                  </button>
-                  <p className="text-xs text-stone-500">
-                    {r.variety} · {r.category}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <div className="font-extrabold text-base font-mono text-[#176B35]">
-                    {formatPrice(r.modalPrice)}
+          paginatedRecords.map((r) => {
+            const isStarred = isCropInWatchlist(r.cropId);
+            return (
+              <div 
+                key={r.id} 
+                className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-800 p-4 shadow-xs space-y-3"
+              >
+                <div className="flex items-start justify-between">
+                  <div className="flex items-start gap-2">
+                    <button
+                      onClick={() => toggleCropWatchlist(r.cropId)}
+                      className="text-stone-300 hover:text-amber-500 mt-0.5"
+                    >
+                      <Star className={`w-4 h-4 ${isStarred ? 'fill-amber-400 text-amber-400' : ''}`} />
+                    </button>
+                    <div>
+                      <button
+                        onClick={() => handleRowClick(r.cropId)}
+                        className="font-bold text-base text-stone-900 dark:text-white hover:text-emerald-700 text-left"
+                      >
+                        {r.cropName}
+                      </button>
+                      <p className="text-xs text-stone-500 dark:text-stone-400">
+                        {r.variety} · {r.category}
+                      </p>
+                    </div>
                   </div>
-                  <span className={`text-[11px] font-bold ${
-                    r.priceChange >= 0 ? 'text-emerald-700' : 'text-red-600'
-                  }`}>
-                    {r.priceChange >= 0 ? `+₹${r.priceChange}` : `-₹${Math.abs(r.priceChange)}`}
+
+                  <div className="text-right">
+                    <div className="font-extrabold text-base font-mono text-[#14532D] dark:text-emerald-400">
+                      {formatPrice(r.modalPrice)}
+                    </div>
+                    <span className={`inline-flex items-center gap-0.5 text-[11px] font-bold ${
+                      r.priceChange >= 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'
+                    }`}>
+                      {r.priceChange >= 0 ? `+₹${r.priceChange}` : `-₹${Math.abs(r.priceChange)}`}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 text-xs border-t border-b border-stone-100 dark:border-stone-800 py-2.5">
+                  <div>
+                    <span className="text-stone-400 block text-[10px] uppercase font-bold">Mandi Yard</span>
+                    <span className="font-medium text-stone-800 dark:text-stone-200">{r.mandiName}</span>
+                  </div>
+                  <div>
+                    <span className="text-stone-400 block text-[10px] uppercase font-bold">Location</span>
+                    <span className="text-stone-700 dark:text-stone-300">{r.district}, {r.state}</span>
+                  </div>
+                  <div>
+                    <span className="text-stone-400 block text-[10px] uppercase font-bold">Price Range</span>
+                    <span className="font-mono text-stone-700 dark:text-stone-300">{formatPrice(r.minPrice)} – {formatPrice(r.maxPrice)}</span>
+                  </div>
+                  <div>
+                    <span className="text-stone-400 block text-[10px] uppercase font-bold">Date</span>
+                    <span className="text-stone-600 dark:text-stone-400">{r.marketDate}</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between pt-1">
+                  <span className="text-[11px] text-stone-400">
+                    {r.dataSource}
                   </span>
+                  <button
+                    onClick={() => handleRowClick(r.cropId)}
+                    className="px-3 py-1.5 bg-[#14532D] dark:bg-emerald-600 text-white text-xs font-semibold rounded-lg"
+                  >
+                    View Details
+                  </button>
                 </div>
               </div>
-
-              <div className="grid grid-cols-2 gap-2 text-xs border-t border-b border-stone-100 py-2.5">
-                <div>
-                  <span className="text-stone-400 block text-[10px] uppercase font-bold">Mandi Yard</span>
-                  <span className="font-medium text-stone-800">{r.mandiName}</span>
-                </div>
-                <div>
-                  <span className="text-stone-400 block text-[10px] uppercase font-bold">Location</span>
-                  <span className="text-stone-700">{r.district}, {r.state}</span>
-                </div>
-                <div>
-                  <span className="text-stone-400 block text-[10px] uppercase font-bold">Price Range</span>
-                  <span className="font-mono text-stone-700">{formatPrice(r.minPrice)} – {formatPrice(r.maxPrice)}</span>
-                </div>
-                <div>
-                  <span className="text-stone-400 block text-[10px] uppercase font-bold">Date & Source</span>
-                  <span className="text-stone-600">{r.marketDate}</span>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between pt-1">
-                <span className="text-[11px] text-stone-400">
-                  {r.dataSource}
-                </span>
-                <button
-                  onClick={() => navigate(`/crops/${r.cropId}`)}
-                  className="px-3 py-1.5 bg-[#176B35] text-white text-xs font-semibold rounded-lg"
-                >
-                  View Trends
-                </button>
-              </div>
-            </div>
-          ))
+            );
+          })
         ) : (
-          <div className="bg-white rounded-xl border border-stone-200 p-8 text-center text-stone-500 text-sm">
+          <div className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-800 p-8 text-center text-stone-500 text-sm">
             {t('noRecordsFound', 'No market price records found matching your filters.')}
           </div>
         )}
@@ -657,8 +704,8 @@ export const PricesPage: React.FC = () => {
 
       {/* Pagination Controls */}
       {totalPages > 1 && (
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-stone-200">
-          <div className="text-xs text-stone-500">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-stone-200 dark:border-stone-800">
+          <div className="text-xs text-stone-500 dark:text-stone-400">
             Page <strong>{currentPage}</strong> of <strong>{totalPages}</strong> ({totalRecords} total items)
           </div>
 
@@ -666,37 +713,16 @@ export const PricesPage: React.FC = () => {
             <button
               onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
               disabled={currentPage === 1}
-              className="px-3 py-1.5 text-xs font-semibold bg-white border border-stone-300 rounded-lg hover:bg-stone-50 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1"
+              className="px-3 py-1.5 text-xs font-semibold bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg hover:bg-stone-50 dark:hover:bg-stone-700 disabled:opacity-40"
             >
               <ChevronLeft className="w-3.5 h-3.5" />
               <span>{t('prevPage', 'Previous')}</span>
             </button>
 
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((pg) => {
-              if (pg === 1 || pg === totalPages || Math.abs(pg - currentPage) <= 1) {
-                return (
-                  <button
-                    key={pg}
-                    onClick={() => setCurrentPage(pg)}
-                    className={`w-8 h-8 text-xs font-bold rounded-lg transition-colors ${
-                      currentPage === pg
-                        ? 'bg-[#176B35] text-white shadow-xs'
-                        : 'bg-white border border-stone-200 text-stone-700 hover:bg-stone-100'
-                    }`}
-                  >
-                    {pg}
-                  </button>
-                );
-              }
-              if (pg === 2 && currentPage > 3) return <span key={pg} className="px-1 text-stone-400">...</span>;
-              if (pg === totalPages - 1 && currentPage < totalPages - 2) return <span key={pg} className="px-1 text-stone-400">...</span>;
-              return null;
-            })}
-
             <button
               onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
-              className="px-3 py-1.5 text-xs font-semibold bg-white border border-stone-300 rounded-lg hover:bg-stone-50 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1"
+              className="px-3 py-1.5 text-xs font-semibold bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg hover:bg-stone-50 dark:hover:bg-stone-700 disabled:opacity-40 flex items-center gap-1"
             >
               <span>{t('nextPage', 'Next')}</span>
               <ChevronRight className="w-3.5 h-3.5" />

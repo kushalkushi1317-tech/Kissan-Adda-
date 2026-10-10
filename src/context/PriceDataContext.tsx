@@ -5,7 +5,8 @@ import {
   Mandi, 
   PriceUnit, 
   ImportHistoryItem,
-  CropCategory 
+  CropCategory,
+  Watchlist
 } from '../types';
 import { 
   CROPS, 
@@ -46,13 +47,23 @@ interface PriceDataContextType {
   selectedCategoryFilter: string;
   setSelectedCategoryFilter: (c: string) => void;
   resetAllFilters: () => void;
+  // Watchlist & Recents
+  watchlist: Watchlist;
+  toggleCropWatchlist: (cropId: string) => void;
+  toggleMandiWatchlist: (mandiId: string) => void;
+  isCropInWatchlist: (cropId: string) => boolean;
+  isMandiInWatchlist: (mandiId: string) => boolean;
+  recentlyViewedIds: string[];
+  recordCropView: (cropId: string) => void;
 }
 
 const PriceDataContext = createContext<PriceDataContextType | undefined>(undefined);
 
-const STORAGE_KEY_RECORDS = 'kissan_adda_records_v1';
-const STORAGE_KEY_UNIT = 'kissan_adda_unit_v1';
-const STORAGE_KEY_HISTORY = 'kissan_adda_history_v1';
+const STORAGE_KEY_RECORDS = 'kissan_adda_records_v2';
+const STORAGE_KEY_UNIT = 'kissan_adda_unit_v2';
+const STORAGE_KEY_HISTORY = 'kissan_adda_history_v2';
+const STORAGE_KEY_WATCHLIST = 'kissan_adda_watchlist_v1';
+const STORAGE_KEY_RECENTS = 'kissan_adda_recents_v1';
 
 export const PriceDataProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [crops] = useState<Crop[]>(CROPS);
@@ -74,8 +85,12 @@ export const PriceDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   });
 
   const [unit, setUnitState] = useState<PriceUnit>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY_UNIT);
-    return saved === 'kg' ? 'kg' : 'quintal';
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY_UNIT);
+      return saved === 'kg' ? 'kg' : 'quintal';
+    } catch {
+      return 'quintal';
+    }
   });
 
   const [importHistory, setImportHistory] = useState<ImportHistoryItem[]>(() => {
@@ -97,6 +112,28 @@ export const PriceDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     ];
   });
 
+  // Watchlist
+  const [watchlist, setWatchlist] = useState<Watchlist>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY_WATCHLIST);
+      if (saved) return JSON.parse(saved);
+    } catch {
+      // ignore
+    }
+    return { cropIds: ['tomato', 'onion', 'wheat'], mandiIds: ['mandi-azadpur', 'mandi-lasalgaon'] };
+  });
+
+  // Recently Viewed Crops
+  const [recentlyViewedIds, setRecentlyViewedIds] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY_RECENTS);
+      if (saved) return JSON.parse(saved);
+    } catch {
+      // ignore
+    }
+    return ['tomato', 'onion', 'cotton'];
+  });
+
   // Global filters
   const [globalSearch, setGlobalSearch] = useState('');
   const [selectedStateFilter, setSelectedStateFilter] = useState('');
@@ -114,7 +151,11 @@ export const PriceDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   const setUnit = (newUnit: PriceUnit) => {
     setUnitState(newUnit);
-    localStorage.setItem(STORAGE_KEY_UNIT, newUnit);
+    try {
+      localStorage.setItem(STORAGE_KEY_UNIT, newUnit);
+    } catch {
+      // ignore
+    }
   };
 
   useEffect(() => {
@@ -132,6 +173,52 @@ export const PriceDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       // storage error
     }
   }, [importHistory]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY_WATCHLIST, JSON.stringify(watchlist));
+    } catch {
+      // ignore
+    }
+  }, [watchlist]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY_RECENTS, JSON.stringify(recentlyViewedIds));
+    } catch {
+      // ignore
+    }
+  }, [recentlyViewedIds]);
+
+  const toggleCropWatchlist = (cropId: string) => {
+    setWatchlist(prev => {
+      const exists = prev.cropIds.includes(cropId);
+      return {
+        ...prev,
+        cropIds: exists ? prev.cropIds.filter(id => id !== cropId) : [...prev.cropIds, cropId],
+      };
+    });
+  };
+
+  const toggleMandiWatchlist = (mandiId: string) => {
+    setWatchlist(prev => {
+      const exists = prev.mandiIds.includes(mandiId);
+      return {
+        ...prev,
+        mandiIds: exists ? prev.mandiIds.filter(id => id !== mandiId) : [...prev.mandiIds, mandiId],
+      };
+    });
+  };
+
+  const isCropInWatchlist = (cropId: string) => watchlist.cropIds.includes(cropId);
+  const isMandiInWatchlist = (mandiId: string) => watchlist.mandiIds.includes(mandiId);
+
+  const recordCropView = (cropId: string) => {
+    setRecentlyViewedIds(prev => {
+      const filtered = prev.filter(id => id !== cropId);
+      return [cropId, ...filtered].slice(0, 8);
+    });
+  };
 
   const formatPriceNumber = (pricePerQuintal: number, overrideUnit?: PriceUnit): number => {
     const activeUnit = overrideUnit || unit;
@@ -184,7 +271,6 @@ export const PriceDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       }
 
       const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
-      // Required fields: cropname, state, district, mandiname, modalprice
       const cropIdx = headers.findIndex(h => h.includes('crop'));
       const stateIdx = headers.findIndex(h => h.includes('state'));
       const distIdx = headers.findIndex(h => h.includes('district'));
@@ -220,7 +306,6 @@ export const PriceDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         const mandiVal = mandiIdx !== -1 && cols[mandiIdx] ? cols[mandiIdx] : 'District Mandi';
         const catVal = (catIdx !== -1 && cols[catIdx] ? cols[catIdx] : 'Vegetables') as CropCategory;
 
-        // Try to map to existing crop
         const matchedCrop = crops.find(c => c.name.toLowerCase() === cropName.toLowerCase());
 
         parsed.push({
@@ -308,6 +393,13 @@ export const PriceDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         selectedCategoryFilter,
         setSelectedCategoryFilter,
         resetAllFilters,
+        watchlist,
+        toggleCropWatchlist,
+        toggleMandiWatchlist,
+        isCropInWatchlist,
+        isMandiInWatchlist,
+        recentlyViewedIds,
+        recordCropView,
       }}
     >
       {children}

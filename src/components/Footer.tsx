@@ -52,6 +52,11 @@ export const Footer: React.FC = () => {
                 </button>
               </li>
               <li>
+                <button onClick={() => navigate('/directory')} className="hover:text-emerald-400 transition-colors">
+                  {t('navDirectory', 'Crop Directory')}
+                </button>
+              </li>
+              <li>
                 <button onClick={() => navigate('/compare')} className="hover:text-emerald-400 transition-colors">
                   {t('navCompare', 'Compare Markets')}
                 </button>

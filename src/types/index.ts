@@ -1,4 +1,25 @@
-export type Language = 'en' | 'hi' | 'te';
+export type Language = 
+  | 'en' // English
+  | 'hi' // Hindi
+  | 'kn' // Kannada
+  | 'ta' // Tamil
+  | 'ml' // Malayalam
+  | 'te' // Telugu
+  | 'mr' // Marathi
+  | 'bn' // Bengali
+  | 'gu' // Gujarati
+  | 'pa' // Punjabi
+  | 'or' // Odia
+  | 'as'; // Assamese
+
+export type ColorTheme = 
+  | 'nature-green' 
+  | 'fresh-lime' 
+  | 'harvest-gold' 
+  | 'earth-brown' 
+  | 'forest-dark';
+
+export type TextSize = 'normal' | 'large';
 
 export type CropCategory = 
   | 'Vegetables' 
@@ -7,15 +28,31 @@ export type CropCategory =
   | 'Pulses' 
   | 'Spices' 
   | 'Oilseeds' 
-  | 'Commercial Crops';
+  | 'Commercial Crops'
+  | 'Plantation Crops';
 
 export type PriceUnit = 'quintal' | 'kg';
+
+export interface RegionalCropNames {
+  hi?: string;
+  kn?: string;
+  ta?: string;
+  ml?: string;
+  te?: string;
+  mr?: string;
+  bn?: string;
+  gu?: string;
+  pa?: string;
+  or?: string;
+  as?: string;
+}
 
 export interface Crop {
   id: string;
   name: string;
   hindiName: string;
   teluguName: string;
+  regionalNames?: RegionalCropNames;
   category: CropCategory;
   imageUrl: string;
   defaultVariety: string;
@@ -89,4 +126,9 @@ export interface ImportHistoryItem {
   status: 'success' | 'failed' | 'partial';
   sourceName: string;
   notes?: string;
+}
+
+export interface Watchlist {
+  cropIds: string[];
+  mandiIds: string[];
 }
